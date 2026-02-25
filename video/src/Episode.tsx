@@ -7,6 +7,7 @@ import { ConfessionalScene } from "./scenes/ConfessionalScene";
 import { VotingScene } from "./scenes/VotingScene";
 import { EliminationScene } from "./scenes/EliminationScene";
 import { StatsScene } from "./scenes/StatsScene";
+import { OutroScene } from "./scenes/OutroScene";
 
 interface EpisodeProps {
   game: GameResult;
@@ -21,6 +22,7 @@ const CONFESSIONAL_DURATION = 120; // 4s per confessional
 const VOTING_DURATION = 120; // 4s
 const ELIMINATION_DURATION = 120; // 4s
 const STATS_DURATION = 180; // 6s
+const OUTRO_DURATION = 150; // 5s
 
 /**
  * Determine which statements get a confessional cut.
@@ -158,6 +160,18 @@ export const Episode: React.FC<EpisodeProps> = ({ game, stats, episodeNumber }) 
       <StatsScene stats={stats} />
     </Sequence>
   );
+  currentFrame += STATS_DURATION;
+
+  // Outro
+  sequences.push(
+    <Sequence key="outro" from={currentFrame} durationInFrames={OUTRO_DURATION}>
+      <OutroScene
+        winner={game.winner}
+        mafiaPlayer={game.mafia_player}
+        episodeNumber={episodeNumber}
+      />
+    </Sequence>
+  );
 
   return <>{sequences}</>;
 };
@@ -192,5 +206,6 @@ export function calculateDuration(game: GameResult): number {
   }
 
   frames += STATS_DURATION;
+  frames += OUTRO_DURATION;
   return frames;
 }
