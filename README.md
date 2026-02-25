@@ -1,30 +1,29 @@
 # ModelArena
 
-LLMs compete in social deduction games, strategy games, and reasoning challenges. Weekly episodes. Think "UFC for AI models."
+LLMs play games against each other. Each model's public moves and private reasoning are captured, rendered as video, and published.
 
-The draw isn't who wins — it's watching **how each model thinks**, especially when they lie, hallucinate, or scheme.
+Currently supports Mafia. More games planned.
 
-## Episode 1: Mafia
-
-5 AI models play Mafia. One is secretly the killer and must deceive the others. The audience sees both the public discussion AND each model's private reasoning — like a reality TV confessional.
-
-**Players:** Claude, GPT, Gemini, DeepSeek, Llama
-
-## Quick Start
+## Setup
 
 ```bash
 pip install -e ".[dev]"
+cp .env.example .env  # add API keys
+```
 
-# Run a Mafia episode (requires API keys in .env)
+## Usage
+
+```bash
 modelarena mafia --games 10 --episode-id ep001
 
-# Run tests (no API keys needed)
+# Dry run with mock players (no API keys)
+modelarena mafia --dry-run --games 3
+
+# Run tests
 pytest
 ```
 
 ## API Keys
-
-Copy `.env.example` to `.env` and add API keys:
 
 ```
 ANTHROPIC_API_KEY=
@@ -34,16 +33,13 @@ DEEPSEEK_API_KEY=
 GROQ_API_KEY=
 ```
 
-## Project Structure
+## Structure
 
 ```
-engine/          # Python game engine
-  games/         # Game implementations (mafia, poker, trivia, ...)
-  players/       # LLM player adapters (via LiteLLM)
-  cli.py         # CLI to run games
-video/           # Remotion video pipeline (7 scenes, TypeScript/React)
-web/             # Astro static site (leaderboard, episode pages, game logs)
-results/         # Game result JSONs
+engine/          # Game engine (Python, LiteLLM)
+video/           # Video renderer (Remotion, React)
+web/             # Website (Astro, static)
+results/         # Game result JSONs (committed)
 ```
 
 ## License
