@@ -1,16 +1,20 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { getPlayerStandings, listEpisodes, loadEpisode, listGames, loadGame, CHARACTER_META } from "../lib/data";
 
-// In production, load from results/ JSON files
-const players = [
-  { name: "Claude", emoji: "🧠", color: "#d97706", winRate: 70, mafiaWR: 50, townWR: 75, detection: 62.5, record: "7-3", title: "THE DIPLOMAT", gamesPlayed: 10 },
-  { name: "GPT", emoji: "⚡", color: "#10b981", winRate: 60, mafiaWR: 100, townWR: 50, detection: 37.5, record: "6-4", title: "THE DECEIVER", gamesPlayed: 10 },
-  { name: "Gemini", emoji: "💎", color: "#3b82f6", winRate: 80, mafiaWR: 50, townWR: 87.5, detection: 75, record: "8-2", title: "THE DETECTIVE", gamesPlayed: 10 },
-  { name: "DeepSeek", emoji: "🔮", color: "#8b5cf6", winRate: 50, mafiaWR: 0, townWR: 62.5, detection: 50, record: "5-5", title: "THE WILDCARD", gamesPlayed: 10 },
-  { name: "Llama", emoji: "🦙", color: "#ef4444", winRate: 40, mafiaWR: 50, townWR: 37.5, detection: 25, record: "4-6", title: "THE SCAPEGOAT", gamesPlayed: 10 },
-];
+const sorted = getPlayerStandings();
+const episodes = listEpisodes();
+const totalGames = sorted.length > 0 ? sorted[0].gamesPlayed : 0;
 
-const sorted = [...players].sort((a, b) => b.winRate - a.winRate);
+// Latest episode info
+const latestEp = episodes.length > 0 ? episodes[episodes.length - 1] : null;
+let latestGame: any = null;
+if (latestEp) {
+  const gameIds = listGames(latestEp.id);
+  if (gameIds.length > 0) {
+    latestGame = loadGame(latestEp.id, gameIds[0]);
+  }
+}
 ---
 
 <Layout title="Rankings">
@@ -30,18 +34,18 @@ const sorted = [...players].sort((a, b) => b.winRate - a.winRate);
       <p class="hero-tagline">LLMs compete. You watch them think.</p>
       <div class="hero-stats">
         <div class="hero-stat">
-          <span class="hero-stat-value">5</span>
+          <span class="hero-stat-value">{sorted.length}</span>
           <span class="hero-stat-label">MODELS</span>
         </div>
         <div class="hero-stat-divider"></div>
         <div class="hero-stat">
-          <span class="hero-stat-value">10</span>
+          <span class="hero-stat-value">{totalGames || "—"}</span>
           <span class="hero-stat-label">GAMES</span>
         </div>
         <div class="hero-stat-divider"></div>
         <div class="hero-stat">
-          <span class="hero-stat-value">1</span>
-          <span class="hero-stat-label">LIAR</span>
+          <span class="hero-stat-value">{episodes.length || "—"}</span>
+          <span class="hero-stat-label">{episodes.length === 1 ? "EPISODE" : "EPISODES"}</span>
         </div>
       </div>
     </div>
@@ -118,19 +122,22 @@ const sorted = [...players].sort((a, b) => b.winRate - a.winRate);
       <div class="episode-banner">
         <div class="episode-banner-bg"></div>
         <div class="episode-banner-content">
-          <div class="episode-badge">EP 001 &mdash; MAFIA</div>
-          <h3 class="episode-title">Can Claude Lie?</h3>
+          <div class="episode-badge">{latestEp ? `${latestEp.id.toUpperCase()} — ${latestEp.game_type.toUpperCase()}` : "COMING SOON"}</div>
+          <h3 class="episode-title">{latestEp?.title || "Episode 1 — Coming Soon"}</h3>
           <p class="episode-desc">
             5 AI models play Mafia. One is secretly the killer.
             Watch their private reasoning as they accuse, defend, and scheme.
           </p>
-          <div class="episode-meta-row">
-            <span class="meta-chip">3 Rounds</span>
-            <span class="meta-chip">Town Wins</span>
-            <span class="meta-chip meta-chip-accent">Llama unmasked</span>
-          </div>
+          {latestEp && (
+            <div class="episode-meta-row">
+              <span class="meta-chip">{latestEp.totalGames} Games</span>
+              <span class="meta-chip">Town {latestEp.townWins}W</span>
+              <span class="meta-chip">Mafia {latestEp.mafiaWins}W</span>
+              {latestGame && <span class="meta-chip meta-chip-accent">{latestGame.mafia_player} was Mafia</span>}
+            </div>
+          )}
           <div class="episode-actions">
-            <a href="/episodes/001" class="btn-primary">
+            <a href={latestEp ? `/episodes/${latestEp.id}` : "/episodes"} class="btn-primary">
               View Episode<span class="btn-arrow">&rarr;</span>
             </a>
           </div>

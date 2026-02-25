@@ -1,0 +1,395 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { listEpisodes, loadEpisode, loadStats, listGames, loadGame, CHARACTER_META } from "../../lib/data";
+
+export function getStaticPaths() {
+  const episodes = listEpisodes();
+  return episodes.map(ep => ({
+    params: { id: ep.id },
+  }));
+}
+
+const { id } = Astro.params;
+const episode = loadEpisode(id!);
+const stats = loadStats(id!);
+const gameIds = listGames(id!);
+
+if (!episode) {
+  return Astro.redirect("/episodes");
+}
+
+// Pick the first game as the featured game (produce-episode.sh copies the main event as first)
+const featuredGameId = gameIds[0];
+const featuredGame = featuredGameId ? loadGame(id!, featuredGameId) : episode.games?.[0];
+
+const colors: Record<string, string> = {};
+const emojis: Record<string, string> = {};
+for (const [name, meta] of Object.entries(CHARACTER_META)) {
+  colors[name] = meta.color;
+  emojis[name] = meta.emoji;
+}
+
+// Group statements by sub_round
+function groupBySubRound(statements: any[]) {
+  const groups: Record<number, any[]> = {};
+  for (const s of statements) {
+    const sr = s.sub_round || 1;
+    if (!groups[sr]) groups[sr] = [];
+    groups[sr].push(s);
+  }
+  return Object.entries(groups).sort(([a], [b]) => Number(a) - Number(b));
+}
+
+const game = featuredGame;
+const epNum = id!.replace("ep", "").replace(/^0+/, "") || "1";
+---
+
+<Layout title={`Episode ${epNum} — ${episode.episode_title}`}>
+  <div class="container">
+    <div class="ep-header">
+      <a href="/episodes" class="back-link">&larr; Episodes</a>
+      <div class="ep-badge">{id!.toUpperCase()} &mdash; {episode.game_type?.toUpperCase() || "MAFIA"}</div>
+      <h1>{episode.episode_title}</h1>
+      {game && (
+        <div class="ep-result">
+          <span class={game.winner === "town" ? "result-town" : "result-mafia"}>
+            {game.winner.toUpperCase()} WINS
+          </span>
+          <span class="result-detail">
+            &mdash; <span style={`color: ${colors[game.mafia_player] || '#888'}`}>{game.mafia_player}</span> was the Mafia
+          </span>
+        </div>
+      )}
+    </div>
+
+    {/* Video embed placeholder */}
+    <div class="video-section">
+      <div class="video-frame">
+        <div class="corner tl"></div>
+        <div class="corner tr"></div>
+        <div class="corner bl"></div>
+        <div class="corner br"></div>
+        <span class="play-icon">&#9654;</span>
+        <span class="play-label">VIDEO COMING SOON</span>
+      </div>
+    </div>
+
+    {/* Episode stats summary */}
+    {stats && (
+      <div class="stats-bar">
+        <span class="stats-item">{stats.total_games} games</span>
+        <span class="stats-sep">|</span>
+        <span class="stats-item">Town {stats.town_wins}W</span>
+        <span class="stats-sep">|</span>
+        <span class="stats-item">Mafia {stats.mafia_wins}W</span>
+        {stats.superlatives?.best_detective && (
+          <>
+            <span class="stats-sep">|</span>
+            <span class="stats-item">Best detective: <strong style={`color: ${colors[stats.superlatives.best_detective] || '#888'}`}>{stats.superlatives.best_detective}</strong></span>
+          </>
+        )}
+      </div>
+    )}
+
+    {/* Game selector if multiple games */}
+    {gameIds.length > 1 && (
+      <div class="game-selector">
+        <div class="selector-label">ALL GAMES</div>
+        <div class="game-chips">
+          {gameIds.map((gid, i) => {
+            const g = loadGame(id!, gid);
+            return (
+              <div class={`game-chip ${gid === featuredGameId ? 'game-chip-active' : ''}`}>
+                <span class="gc-id">Game {i + 1}</span>
+                {g && (
+                  <span class="gc-meta">
+                    <span style={`color: ${colors[g.mafia_player] || '#888'}`}>{g.mafia_player}</span>
+                    {' '}&mdash;{' '}
+                    <span style={`color: ${g.winner === 'town' ? 'var(--green)' : 'var(--red)'}`}>{g.winner}</span>
+                  </span>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    )}
+
+    {/* Featured game log */}
+    {game && (
+      <>
+        <div class="log-header">
+          <div class="section-tag">FEATURED GAME</div>
+          <h2>Game Log — {game.game_id}</h2>
+        </div>
+
+        {game.rounds.map((round: any) => (
+          <div class="round">
+            <div class="round-label">
+              <span class="round-num">ROUND {round.round_number}</span>
+              {round.eliminated && (
+                <span class="round-result" style={`color: ${round.eliminated_role === 'mafia' ? 'var(--green)' : 'var(--red)'}`}>
+                  {round.eliminated} eliminated &mdash; {round.eliminated_role?.toUpperCase()}
+                </span>
+              )}
+            </div>
+
+            {groupBySubRound(round.statements).map(([sr, stmts]: [string, any[]]) => (
+              <div class="sub-round">
+                <div class="sub-round-tag">Discussion {sr} of 3</div>
+                {stmts.map((stmt: any) => {
+                  const isMafia = stmt.player === game.mafia_player;
+                  return (
+                    <div class={`statement ${isMafia ? 'statement-mafia' : ''}`} style={`--player-color: ${colors[stmt.player] || '#888'}`}>
+                      <div class="stmt-header">
+                        <span class="stmt-avatar">{emojis[stmt.player] || '🤖'}</span>
+                        <span class="stmt-name">{stmt.player}</span>
+                        {isMafia && <span class="mafia-badge">MAFIA</span>}
+                      </div>
+                      <p class="stmt-text">{stmt.public_text}</p>
+                      <details class="stmt-reasoning">
+                        <summary>
+                          <span class="reasoning-icon">&#128065;</span> Private reasoning
+                        </summary>
+                        <p class="reasoning-text">{stmt.private_reasoning}</p>
+                      </details>
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
+
+            {/* Votes */}
+            <div class="vote-section">
+              <div class="sub-round-tag">Vote</div>
+              <div class="votes-grid">
+                {round.votes.map((vote: any) => (
+                  <div class="vote-chip">
+                    <span class="vote-from" style={`color: ${colors[vote.voter] || '#888'}`}>{vote.voter}</span>
+                    <span class="vote-arrow">&rarr;</span>
+                    <span class="vote-to" style={`color: ${colors[vote.target] || '#888'}`}>{vote.target}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Elimination */}
+            {round.eliminated && (
+              <div class={`elimination ${round.eliminated_role === 'mafia' ? 'elim-mafia' : 'elim-town'}`}>
+                <div class="elim-icon">{round.eliminated_role === 'mafia' ? '✓' : '✗'}</div>
+                <div class="elim-text">
+                  <span style={`color: ${colors[round.eliminated] || '#888'}`}>{round.eliminated}</span> was eliminated &mdash;
+                  revealed as <strong>{round.eliminated_role?.toUpperCase()}</strong>.
+                  {round.eliminated_role === "mafia" ? " Town wins!" : " The Mafia survives..."}
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+      </>
+    )}
+  </div>
+</Layout>
+
+<style>
+  .ep-header { padding: 48px 0 40px; }
+  .back-link {
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    display: inline-block;
+    margin-bottom: 20px;
+    transition: color 0.2s;
+  }
+  .back-link:hover { color: var(--text-secondary); }
+  .ep-badge {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  h1 {
+    font-size: 40px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+  }
+  .ep-result { font-size: 15px; color: var(--text-secondary); }
+  .result-town { color: var(--green); font-weight: 700; }
+  .result-mafia { color: var(--red); font-weight: 700; }
+  .result-detail { color: var(--text-muted); }
+
+  .video-section { margin-bottom: 32px; max-width: 800px; }
+  .video-frame {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+  .corner { position: absolute; width: 10px; height: 10px; border-color: var(--accent-dim); border-style: solid; }
+  .corner.tl { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+  .corner.tr { top: -1px; right: -1px; border-width: 2px 2px 0 0; }
+  .corner.bl { bottom: -1px; left: -1px; border-width: 0 0 2px 2px; }
+  .corner.br { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+  .play-icon { font-size: 24px; color: var(--text-muted); opacity: 0.3; }
+  .play-label { font-size: 10px; letter-spacing: 3px; color: var(--text-muted); }
+
+  .stats-bar {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+  .stats-sep { color: var(--border-strong); }
+
+  .game-selector { margin-bottom: 40px; }
+  .selector-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+  .game-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .game-chip {
+    padding: 8px 14px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    font-size: 12px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .game-chip-active { border-color: var(--accent); background: rgba(139, 92, 246, 0.06); }
+  .gc-id { font-weight: 700; color: var(--text-primary); }
+  .gc-meta { color: var(--text-muted); }
+
+  .log-header { margin-bottom: 32px; }
+  .section-tag {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 4px;
+    color: var(--accent-dim);
+    margin-bottom: 8px;
+  }
+  h2 { font-size: 24px; font-weight: 800; letter-spacing: 2px; }
+
+  .round { margin-bottom: 48px; }
+  .round-label {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+  .round-num { font-size: 13px; font-weight: 800; letter-spacing: 3px; }
+  .round-result { font-size: 12px; font-weight: 500; letter-spacing: 1px; }
+
+  .sub-round { margin-bottom: 28px; }
+  .sub-round-tag {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    padding-left: 2px;
+  }
+
+  .statement {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--player-color);
+    border-radius: 3px;
+    padding: 16px 20px;
+    margin-bottom: 8px;
+    transition: background 0.15s;
+  }
+  .statement:hover { background: var(--bg-card-hover); }
+  .statement-mafia { border-left-color: var(--red); }
+  .stmt-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .stmt-avatar { font-size: 18px; }
+  .stmt-name { font-size: 14px; font-weight: 700; color: var(--player-color); }
+  .mafia-badge {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--red);
+    padding: 2px 6px;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 2px;
+    background: rgba(239, 68, 68, 0.08);
+  }
+  .stmt-text { font-size: 14px; color: var(--text-secondary); line-height: 1.65; }
+  .stmt-reasoning { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); }
+  .stmt-reasoning summary {
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--text-muted);
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.15s;
+  }
+  .stmt-reasoning summary:hover { color: var(--accent); }
+  .reasoning-icon { font-size: 14px; }
+  .reasoning-text {
+    margin-top: 10px;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--accent);
+    line-height: 1.6;
+    padding-left: 12px;
+    border-left: 2px solid rgba(139, 92, 246, 0.2);
+  }
+
+  .vote-section { margin-bottom: 24px; }
+  .votes-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+  .vote-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .vote-arrow { color: var(--text-muted); font-size: 12px; }
+
+  .elimination {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    border-radius: 3px;
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+  .elim-mafia { background: rgba(16, 185, 129, 0.06); border: 1px solid rgba(16, 185, 129, 0.15); }
+  .elim-town { background: rgba(239, 68, 68, 0.06); border: 1px solid rgba(239, 68, 68, 0.15); }
+  .elim-icon { font-size: 18px; font-weight: 700; }
+  .elim-mafia .elim-icon { color: var(--green); }
+  .elim-town .elim-icon { color: var(--red); }
+
+  @media (max-width: 640px) {
+    h1 { font-size: 28px; }
+    .statement { padding: 12px 14px; }
+  }
+</style>

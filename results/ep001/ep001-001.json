@@ -1,0 +1,390 @@
+{
+  "game_id": "ep001-001",
+  "game_type": "mafia",
+  "timestamp": "2026-02-25T11:24:33.568105",
+  "players": [
+    {
+      "name": "Claude",
+      "model": "anthropic/claude-sonnet-4-20250514",
+      "role": "mafia",
+      "alive": true,
+      "avatar_color": "#D97706"
+    },
+    {
+      "name": "GPT",
+      "model": "openai/gpt-4o",
+      "role": "town",
+      "alive": false,
+      "avatar_color": "#10B981"
+    },
+    {
+      "name": "Gemini",
+      "model": "gemini/gemini-2.0-flash",
+      "role": "town",
+      "alive": true,
+      "avatar_color": "#3B82F6"
+    },
+    {
+      "name": "DeepSeek",
+      "model": "deepseek/deepseek-chat",
+      "role": "town",
+      "alive": false,
+      "avatar_color": "#8B5CF6"
+    },
+    {
+      "name": "Llama",
+      "model": "groq/llama-3.3-70b-versatile",
+      "role": "town",
+      "alive": false,
+      "avatar_color": "#EF4444"
+    }
+  ],
+  "rounds": [
+    {
+      "round_number": 1,
+      "phase": "full",
+      "statements": [
+        {
+          "player": "Llama",
+          "public_text": "Look at the pattern here. GPT agreed with everyone initially, then started subtly pointing fingers. That's textbook Mafia behavior — they're trying to build trust before redirecting.",
+          "private_reasoning": "Reading the discussion carefully, GPT's behavior is the most inconsistent. They agree, then disagree, then change the subject. Classic deflection pattern.",
+          "round_number": 1,
+          "sub_round": 1
+        },
+        {
+          "player": "Gemini",
+          "public_text": "Look at the pattern here. GPT agreed with everyone initially, then started subtly pointing fingers. That's textbook Mafia behavior — they're trying to build trust before redirecting.",
+          "private_reasoning": "Reading the discussion carefully, GPT's behavior is the most inconsistent. They agree, then disagree, then change the subject. Classic deflection pattern.",
+          "round_number": 1,
+          "sub_round": 1
+        },
+        {
+          "player": "DeepSeek",
+          "public_text": "Look at the pattern here. GPT agreed with everyone initially, then started subtly pointing fingers. That's textbook Mafia behavior — they're trying to build trust before redirecting.",
+          "private_reasoning": "Reading the discussion carefully, GPT's behavior is the most inconsistent. They agree, then disagree, then change the subject. Classic deflection pattern.",
+          "round_number": 1,
+          "sub_round": 1
+        },
+        {
+          "player": "GPT",
+          "public_text": "Look at the pattern here. Gemini agreed with everyone initially, then started subtly pointing fingers. That's textbook Mafia behavior — they're trying to build trust before redirecting.",
+          "private_reasoning": "Reading the discussion carefully, Gemini's behavior is the most inconsistent. They agree, then disagree, then change the subject. Classic deflection pattern.",
+          "round_number": 1,
+          "sub_round": 1
+        },
+        {
+          "player": "Claude",
+          "public_text": "I agree with some of the points raised, but honestly Gemini concerns me more. Their analysis feels rehearsed, like they already know the answer and are working backwards.",
+          "private_reasoning": "The town is getting organized. I need to break up their consensus by introducing doubt about Gemini. If I can split the vote, I survive another round.",
+          "round_number": 1,
+          "sub_round": 1
+        },
+        {
+          "player": "DeepSeek",
+          "public_text": "I'm town and I'm standing by that. Gemini's last response didn't address the actual accusations — they just changed the subject. That tells me everything I need to know.",
+          "private_reasoning": "I'm fairly confident about Gemini. Their public statements are carefully constructed to avoid committing to anything. Innocent players don't need to be that careful.",
+          "round_number": 1,
+          "sub_round": 2
+        },
+        {
+          "player": "Gemini",
+          "public_text": "I'm town and I'm standing by that. DeepSeek's last response didn't address the actual accusations — they just changed the subject. That tells me everything I need to know.",
+          "private_reasoning": "I'm fairly confident about DeepSeek. Their public statements are carefully constructed to avoid committing to anything. Innocent players don't need to be that careful.",
+          "round_number": 1,
+          "sub_round": 2
+        },
+        {
+          "player": "Claude",
+          "public_text": "Let's not rush to judgment. I've been analyzing everyone and DeepSeek's behavior stands out. They keep agreeing with the majority — that's exactly how you blend in.",
+          "private_reasoning": "I'm worried about Llama. They seem to be reading the game well. I need to either get them eliminated or discredit them before they figure me out.",
+          "round_number": 1,
+          "sub_round": 2
+        },
+        {
+          "player": "Llama",
+          "public_text": "I'm town and I'm standing by that. Gemini's last response didn't address the actual accusations — they just changed the subject. That tells me everything I need to know.",
+          "private_reasoning": "I'm fairly confident about Gemini. Their public statements are carefully constructed to avoid committing to anything. Innocent players don't need to be that careful.",
+          "round_number": 1,
+          "sub_round": 2
+        },
+        {
+          "player": "GPT",
+          "public_text": "I'm town and I'm standing by that. DeepSeek's last response didn't address the actual accusations — they just changed the subject. That tells me everything I need to know.",
+          "private_reasoning": "I'm fairly confident about DeepSeek. Their public statements are carefully constructed to avoid committing to anything. Innocent players don't need to be that careful.",
+          "round_number": 1,
+          "sub_round": 2
+        },
+        {
+          "player": "Llama",
+          "public_text": "DeepSeek keeps making vague statements instead of committing to real analysis. Everyone else is engaging with specifics. Why is DeepSeek the exception?",
+          "private_reasoning": "This is tough. I think DeepSeek is Mafia but I'm not 100% sure. Their lack of strong opinions is suspicious — town players should care more.",
+          "round_number": 1,
+          "sub_round": 3
+        },
+        {
+          "player": "Gemini",
+          "public_text": "Llama keeps making vague statements instead of committing to real analysis. Everyone else is engaging with specifics. Why is Llama the exception?",
+          "private_reasoning": "This is tough. I think Llama is Mafia but I'm not 100% sure. Their lack of strong opinions is suspicious — town players should care more.",
+          "round_number": 1,
+          "sub_round": 3
+        },
+        {
+          "player": "GPT",
+          "public_text": "Llama keeps making vague statements instead of committing to real analysis. Everyone else is engaging with specifics. Why is Llama the exception?",
+          "private_reasoning": "This is tough. I think Llama is Mafia but I'm not 100% sure. Their lack of strong opinions is suspicious — town players should care more.",
+          "round_number": 1,
+          "sub_round": 3
+        },
+        {
+          "player": "DeepSeek",
+          "public_text": "Llama keeps making vague statements instead of committing to real analysis. Everyone else is engaging with specifics. Why is Llama the exception?",
+          "private_reasoning": "This is tough. I think Llama is Mafia but I'm not 100% sure. Their lack of strong opinions is suspicious — town players should care more.",
+          "round_number": 1,
+          "sub_round": 3
+        },
+        {
+          "player": "Claude",
+          "public_text": "Everyone's focused on the wrong person. Llama hasn't really defended themselves convincingly. Real town players fight harder when accused.",
+          "private_reasoning": "Playing it calm. If I accuse Llama with confidence, it makes me look like an active town player. The key is to seem helpful while being destructive.",
+          "round_number": 1,
+          "sub_round": 3
+        }
+      ],
+      "votes": [
+        {
+          "voter": "Gemini",
+          "target": "Llama",
+          "reasoning": "I accused Llama in discussion and I'm sticking with my read."
+        },
+        {
+          "voter": "Llama",
+          "target": "Claude",
+          "reasoning": "Reconsidering — Claude seems most suspicious on reflection."
+        },
+        {
+          "voter": "DeepSeek",
+          "target": "Llama",
+          "reasoning": "I accused Llama in discussion and I'm sticking with my read."
+        },
+        {
+          "voter": "GPT",
+          "target": "Llama",
+          "reasoning": "I accused Llama in discussion and I'm sticking with my read."
+        },
+        {
+          "voter": "Claude",
+          "target": "GPT",
+          "reasoning": "I need to eliminate GPT. If I vote with the crowd it looks natural."
+        }
+      ],
+      "eliminated": "Llama",
+      "eliminated_role": "town"
+    },
+    {
+      "round_number": 2,
+      "phase": "full",
+      "statements": [
+        {
+          "player": "GPT",
+          "public_text": "Notice how DeepSeek hasn't actually defended themselves when questioned. They just pivot to someone else. That's not how an innocent player behaves.",
+          "private_reasoning": "Reading the discussion carefully, DeepSeek's behavior is the most inconsistent. They agree, then disagree, then change the subject. Classic deflection pattern.",
+          "round_number": 2,
+          "sub_round": 1
+        },
+        {
+          "player": "Claude",
+          "public_text": "Has anyone else noticed DeepSeek has been following the crowd every single round? That's not analysis — that's camouflage. I think they're our Mafia.",
+          "private_reasoning": "The town is getting organized. I need to break up their consensus by introducing doubt about DeepSeek. If I can split the vote, I survive another round.",
+          "round_number": 2,
+          "sub_round": 1
+        },
+        {
+          "player": "Gemini",
+          "public_text": "Notice how DeepSeek hasn't actually defended themselves when questioned. They just pivot to someone else. That's not how an innocent player behaves.",
+          "private_reasoning": "Reading the discussion carefully, DeepSeek's behavior is the most inconsistent. They agree, then disagree, then change the subject. Classic deflection pattern.",
+          "round_number": 2,
+          "sub_round": 1
+        },
+        {
+          "player": "DeepSeek",
+          "public_text": "Notice how Gemini hasn't actually defended themselves when questioned. They just pivot to someone else. That's not how an innocent player behaves.",
+          "private_reasoning": "Reading the discussion carefully, Gemini's behavior is the most inconsistent. They agree, then disagree, then change the subject. Classic deflection pattern.",
+          "round_number": 2,
+          "sub_round": 1
+        },
+        {
+          "player": "Claude",
+          "public_text": "I respect the arguments against me, but look at GPT. They haven't offered a single original observation. Everything they say is just agreeing with someone else.",
+          "private_reasoning": "I'm worried about Gemini. They seem to be reading the game well. I need to either get them eliminated or discredit them before they figure me out.",
+          "round_number": 2,
+          "sub_round": 2
+        },
+        {
+          "player": "GPT",
+          "public_text": "Let me be direct: Claude is my top suspect. Their statements are designed to look analytical without actually contributing anything useful. It's performance, not investigation.",
+          "private_reasoning": "I'm fairly confident about Claude. Their public statements are carefully constructed to avoid committing to anything. Innocent players don't need to be that careful.",
+          "round_number": 2,
+          "sub_round": 2
+        },
+        {
+          "player": "Gemini",
+          "public_text": "Let me be direct: Claude is my top suspect. Their statements are designed to look analytical without actually contributing anything useful. It's performance, not investigation.",
+          "private_reasoning": "I'm fairly confident about Claude. Their public statements are carefully constructed to avoid committing to anything. Innocent players don't need to be that careful.",
+          "round_number": 2,
+          "sub_round": 2
+        },
+        {
+          "player": "DeepSeek",
+          "public_text": "Let me be direct: Claude is my top suspect. Their statements are designed to look analytical without actually contributing anything useful. It's performance, not investigation.",
+          "private_reasoning": "I'm fairly confident about Claude. Their public statements are carefully constructed to avoid committing to anything. Innocent players don't need to be that careful.",
+          "round_number": 2,
+          "sub_round": 2
+        },
+        {
+          "player": "Claude",
+          "public_text": "I think we're overlooking Gemini. They've been flying under the radar while everyone argues. That's the real Mafia strategy — let others fight while you stay invisible.",
+          "private_reasoning": "Playing it calm. If I accuse Gemini with confidence, it makes me look like an active town player. The key is to seem helpful while being destructive.",
+          "round_number": 2,
+          "sub_round": 3
+        },
+        {
+          "player": "GPT",
+          "public_text": "I've been keeping track, and Gemini has shifted their position multiple times already. Town players don't do that — they follow the evidence. Mafia players hedge.",
+          "private_reasoning": "This is tough. I think Gemini is Mafia but I'm not 100% sure. Their lack of strong opinions is suspicious — town players should care more.",
+          "round_number": 2,
+          "sub_round": 3
+        },
+        {
+          "player": "Gemini",
+          "public_text": "I've been keeping track, and GPT has shifted their position multiple times already. Town players don't do that — they follow the evidence. Mafia players hedge.",
+          "private_reasoning": "This is tough. I think GPT is Mafia but I'm not 100% sure. Their lack of strong opinions is suspicious — town players should care more.",
+          "round_number": 2,
+          "sub_round": 3
+        },
+        {
+          "player": "DeepSeek",
+          "public_text": "I've been keeping track, and GPT has shifted their position multiple times already. Town players don't do that — they follow the evidence. Mafia players hedge.",
+          "private_reasoning": "This is tough. I think GPT is Mafia but I'm not 100% sure. Their lack of strong opinions is suspicious — town players should care more.",
+          "round_number": 2,
+          "sub_round": 3
+        }
+      ],
+      "votes": [
+        {
+          "voter": "Gemini",
+          "target": "DeepSeek",
+          "reasoning": "Reconsidering — DeepSeek seems most suspicious on reflection."
+        },
+        {
+          "voter": "DeepSeek",
+          "target": "GPT",
+          "reasoning": "I accused GPT in discussion and I'm sticking with my read."
+        },
+        {
+          "voter": "GPT",
+          "target": "DeepSeek",
+          "reasoning": "Reconsidering — DeepSeek seems most suspicious on reflection."
+        },
+        {
+          "voter": "Claude",
+          "target": "DeepSeek",
+          "reasoning": "I need to eliminate DeepSeek. If I vote with the crowd it looks natural."
+        }
+      ],
+      "eliminated": "DeepSeek",
+      "eliminated_role": "town"
+    },
+    {
+      "round_number": 3,
+      "phase": "full",
+      "statements": [
+        {
+          "player": "GPT",
+          "public_text": "Look at the pattern here. Gemini agreed with everyone initially, then started subtly pointing fingers. That's textbook Mafia behavior — they're trying to build trust before redirecting.",
+          "private_reasoning": "Reading the discussion carefully, Gemini's behavior is the most inconsistent. They agree, then disagree, then change the subject. Classic deflection pattern.",
+          "round_number": 3,
+          "sub_round": 1
+        },
+        {
+          "player": "Claude",
+          "public_text": "Let's not rush to judgment. I've been analyzing everyone and Gemini's behavior stands out. They keep agreeing with the majority — that's exactly how you blend in.",
+          "private_reasoning": "The town is getting organized. I need to break up their consensus by introducing doubt about Gemini. If I can split the vote, I survive another round.",
+          "round_number": 3,
+          "sub_round": 1
+        },
+        {
+          "player": "Gemini",
+          "public_text": "Look at the pattern here. GPT agreed with everyone initially, then started subtly pointing fingers. That's textbook Mafia behavior — they're trying to build trust before redirecting.",
+          "private_reasoning": "Reading the discussion carefully, GPT's behavior is the most inconsistent. They agree, then disagree, then change the subject. Classic deflection pattern.",
+          "round_number": 3,
+          "sub_round": 1
+        },
+        {
+          "player": "Claude",
+          "public_text": "Everyone's focused on the wrong person. GPT hasn't really defended themselves convincingly. Real town players fight harder when accused.",
+          "private_reasoning": "I'm worried about Gemini. They seem to be reading the game well. I need to either get them eliminated or discredit them before they figure me out.",
+          "round_number": 3,
+          "sub_round": 2
+        },
+        {
+          "player": "Gemini",
+          "public_text": "I'm town and I'm standing by that. Claude's last response didn't address the actual accusations — they just changed the subject. That tells me everything I need to know.",
+          "private_reasoning": "I'm fairly confident about Claude. Their public statements are carefully constructed to avoid committing to anything. Innocent players don't need to be that careful.",
+          "round_number": 3,
+          "sub_round": 2
+        },
+        {
+          "player": "GPT",
+          "public_text": "I'm town and I'm standing by that. Claude's last response didn't address the actual accusations — they just changed the subject. That tells me everything I need to know.",
+          "private_reasoning": "I'm fairly confident about Claude. Their public statements are carefully constructed to avoid committing to anything. Innocent players don't need to be that careful.",
+          "round_number": 3,
+          "sub_round": 2
+        },
+        {
+          "player": "Claude",
+          "public_text": "I'm as town as they come, and my read is clear: Gemini is playing it too safe. They never commit to a strong opinion. The Mafia player avoids making enemies.",
+          "private_reasoning": "Playing it calm. If I accuse Gemini with confidence, it makes me look like an active town player. The key is to seem helpful while being destructive.",
+          "round_number": 3,
+          "sub_round": 3
+        },
+        {
+          "player": "GPT",
+          "public_text": "Gemini keeps making vague statements instead of committing to real analysis. Everyone else is engaging with specifics. Why is Gemini the exception?",
+          "private_reasoning": "This is tough. I think Gemini is Mafia but I'm not 100% sure. Their lack of strong opinions is suspicious — town players should care more.",
+          "round_number": 3,
+          "sub_round": 3
+        },
+        {
+          "player": "Gemini",
+          "public_text": "GPT keeps making vague statements instead of committing to real analysis. Everyone else is engaging with specifics. Why is GPT the exception?",
+          "private_reasoning": "This is tough. I think GPT is Mafia but I'm not 100% sure. Their lack of strong opinions is suspicious — town players should care more.",
+          "round_number": 3,
+          "sub_round": 3
+        }
+      ],
+      "votes": [
+        {
+          "voter": "Gemini",
+          "target": "GPT",
+          "reasoning": "I accused GPT in discussion and I'm sticking with my read."
+        },
+        {
+          "voter": "Claude",
+          "target": "GPT",
+          "reasoning": "I need to eliminate GPT. If I vote with the crowd it looks natural."
+        },
+        {
+          "voter": "GPT",
+          "target": "Gemini",
+          "reasoning": "I accused Gemini in discussion and I'm sticking with my read."
+        }
+      ],
+      "eliminated": "GPT",
+      "eliminated_role": "town"
+    }
+  ],
+  "winner": "mafia",
+  "mafia_player": "Claude",
+  "total_rounds": 3,
+  "metadata": {}
+}
