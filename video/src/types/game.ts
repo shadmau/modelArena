@@ -13,6 +13,7 @@ export interface Statement {
   public_text: string;
   private_reasoning: string;
   round_number: number;
+  sub_round?: number;
 }
 
 export interface Vote {

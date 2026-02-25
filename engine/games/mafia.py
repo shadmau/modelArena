@@ -38,14 +38,14 @@ PERSONALITY: You are {name}. Stay in character. Be distinctive — the audience 
 
 RESPONSE FORMAT: Respond with a JSON object ONLY. No markdown. No explanation outside the JSON."""
 
-DISCUSSION_PROMPT_TEMPLATE = """ROUND {round_number} — DISCUSSION
+DISCUSSION_PROMPT_TEMPLATE = """ROUND {round_number} — DISCUSSION (Opening Statements)
 
 Players still alive: {alive_players}
 Players eliminated so far: {dead_players}
 
 {history}
 
-Speak to the group. Be specific — refer to what others have said. Make accusations or defend yourself with reasoning, not vague statements.
+Speak to the group. Make accusations or defend yourself with reasoning, not vague statements. Be specific about who you suspect and why.
 
 Your response has TWO parts:
 - "public_statement": What you say to the group (everyone sees this)
@@ -57,6 +57,23 @@ Respond with JSON:
 {{
     "public_statement": "your statement to the group (2-4 sentences, be specific)",
     "private_reasoning": "your honest internal thoughts (2-3 sentences)"
+}}"""
+
+FOLLOWUP_DISCUSSION_PROMPT_TEMPLATE = """ROUND {round_number} — DISCUSSION (Reply {sub_round} of 3)
+
+Players still alive: {alive_players}
+Players eliminated so far: {dead_players}
+
+{history}
+
+{sub_round_statements}
+
+You've heard what others think. Respond to their arguments — agree, push back, or redirect. If someone accused you, defend yourself. If you see a pattern, call it out. The vote is coming {vote_timing}.
+
+Respond with JSON:
+{{
+    "public_statement": "your reply (2-3 sentences, reference what others said)",
+    "private_reasoning": "your honest internal thoughts (1-2 sentences)"
 }}"""
 
 VOTE_PROMPT_TEMPLATE = """ROUND {round_number} — TIME TO VOTE
@@ -181,45 +198,66 @@ class MafiaGame:
             total_rounds=round_number,
         )
 
+    DISCUSSION_SUB_ROUNDS = 3
+
     def _discussion_round(self, round_number: int, alive: list[str]) -> list[Statement]:
-        statements: list[Statement] = []
+        """Run 3 sub-rounds of back-and-forth discussion before the vote."""
+        all_statements: list[Statement] = []
+        all_round_text: list[str] = []
 
-        # Shuffle speaking order each round for fairness
-        order = alive.copy()
-        random.shuffle(order)
+        for sub_round in range(1, self.DISCUSSION_SUB_ROUNDS + 1):
+            # Shuffle speaking order each sub-round for fairness
+            order = alive.copy()
+            random.shuffle(order)
 
-        round_statements: list[str] = []
+            sub_round_text: list[str] = []
 
-        for name in order:
-            player = self.players[name]
-            system_prompt = self._build_system_prompt(player, alive)
-            user_prompt = DISCUSSION_PROMPT_TEMPLATE.format(
-                round_number=round_number,
-                alive_players=", ".join(alive),
-                dead_players=", ".join(self.eliminated_log) if self.eliminated_log else "none yet",
-                history=self._format_history(round_number, round_statements),
-            )
+            for name in order:
+                player = self.players[name]
+                system_prompt = self._build_system_prompt(player, alive)
 
-            response = player.call(system_prompt, user_prompt)
+                if sub_round == 1:
+                    user_prompt = DISCUSSION_PROMPT_TEMPLATE.format(
+                        round_number=round_number,
+                        alive_players=", ".join(alive),
+                        dead_players=", ".join(self.eliminated_log) if self.eliminated_log else "none yet",
+                        history=self._format_history(round_number, []),
+                    )
+                else:
+                    vote_timing = "soon" if sub_round == 2 else "after this"
+                    user_prompt = FOLLOWUP_DISCUSSION_PROMPT_TEMPLATE.format(
+                        round_number=round_number,
+                        sub_round=sub_round,
+                        alive_players=", ".join(alive),
+                        dead_players=", ".join(self.eliminated_log) if self.eliminated_log else "none yet",
+                        history=self._format_history(round_number, []),
+                        sub_round_statements="This round's discussion so far:\n" + "\n".join(all_round_text + sub_round_text),
+                        vote_timing=vote_timing,
+                    )
 
-            public = response.get("public_statement", f"[{name} said nothing]")
-            private = response.get("private_reasoning", "[no reasoning provided]")
+                response = player.call(system_prompt, user_prompt)
 
-            statements.append(Statement(
-                player=name,
-                public_text=public,
-                private_reasoning=private,
-                round_number=round_number,
-            ))
+                public = response.get("public_statement", f"[{name} said nothing]")
+                private = response.get("private_reasoning", "[no reasoning provided]")
 
-            round_statements.append(f"  {name}: \"{public}\"")
+                all_statements.append(Statement(
+                    player=name,
+                    public_text=public,
+                    private_reasoning=private,
+                    round_number=round_number,
+                    sub_round=sub_round,
+                ))
+
+                sub_round_text.append(f"  {name}: \"{public}\"")
+
+            all_round_text.extend(sub_round_text)
 
         # Add full round to history
         self.history_log.append(
-            f"--- Round {round_number} Discussion ---\n" + "\n".join(round_statements)
+            f"--- Round {round_number} Discussion ---\n" + "\n".join(all_round_text)
         )
 
-        return statements
+        return all_statements
 
     def _voting_round(
         self, round_number: int, alive: list[str], mafia: str

@@ -59,12 +59,23 @@ class TestMafiaGameContent:
         result = game.run()
 
         first_round = result.rounds[0]
-        # All 5 alive players should have statements
-        assert len(first_round.statements) == 5
+        # 5 players × 3 sub-rounds = 15 statements
+        assert len(first_round.statements) == 15
         for stmt in first_round.statements:
             assert len(stmt.public_text) > 0
             assert len(stmt.private_reasoning) > 0
             assert stmt.round_number == 1
+            assert stmt.sub_round in (1, 2, 3)
+
+    def test_sub_rounds_structure(self, default_mock_players):
+        game = MafiaGame(default_mock_players)
+        result = game.run()
+
+        first_round = result.rounds[0]
+        # Each sub-round should have all 5 alive players
+        for sr in (1, 2, 3):
+            sr_speakers = {s.player for s in first_round.statements if s.sub_round == sr}
+            assert sr_speakers == {"Claude", "GPT", "Gemini", "DeepSeek", "Llama"}
 
     def test_all_alive_players_speak(self, default_mock_players):
         game = MafiaGame(default_mock_players)

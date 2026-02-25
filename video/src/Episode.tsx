@@ -24,22 +24,34 @@ const STATS_DURATION = 180; // 6s
 
 /**
  * Determine which statements get a confessional cut.
- * Deterministic — uses player index + round number, NOT Math.random().
- * Rules:
- * - Mafia player ALWAYS gets a confessional (the audience needs to see them scheme)
- * - First speaker of each round gets one (sets the tone)
- * - Every other non-mafia player gets one (keeps pacing)
+ * Deterministic — uses player index + sub-round, NOT Math.random().
+ * With 3 sub-rounds of discussion, we're selective to keep pacing tight:
+ * - Sub-round 1: Mafia always, first speaker, alternating others
+ * - Sub-round 2: Mafia only (middle round = fast back-and-forth)
+ * - Sub-round 3: Mafia always, last speaker (final thoughts before vote)
  */
 function shouldShowConfessional(
   playerName: string,
   mafiaPlayer: string,
   statementIndex: number,
   roundNumber: number,
+  subRound: number = 1,
+  totalInSubRound: number = 5,
 ): boolean {
   if (playerName === mafiaPlayer) return true;
-  if (statementIndex === 0) return true;
-  // Alternate: show for odd indices in odd rounds, even indices in even rounds
-  return (statementIndex + roundNumber) % 2 === 0;
+
+  if (subRound === 1) {
+    if (statementIndex === 0) return true;
+    return (statementIndex + roundNumber) % 2 === 0;
+  }
+
+  if (subRound === 2) {
+    return false; // Only mafia gets confessionals in the fast middle round
+  }
+
+  // Sub-round 3: last speaker gets a confessional (final thoughts)
+  const isLastInSubRound = statementIndex === totalInSubRound - 1;
+  return isLastInSubRound;
 }
 
 export const Episode: React.FC<EpisodeProps> = ({ game, stats, episodeNumber }) => {
@@ -56,39 +68,50 @@ export const Episode: React.FC<EpisodeProps> = ({ game, stats, episodeNumber }) 
 
   // For each round
   for (const round of game.rounds) {
-    // Discussion: each statement + confessional for selected players
-    for (let si = 0; si < round.statements.length; si++) {
-      const statement = round.statements[si];
-      const isMafia = statement.player === game.mafia_player;
+    // Group statements by sub-round for proper confessional logic
+    const subRounds = new Map<number, typeof round.statements>();
+    for (const stmt of round.statements) {
+      const sr = stmt.sub_round ?? 1;
+      if (!subRounds.has(sr)) subRounds.set(sr, []);
+      subRounds.get(sr)!.push(stmt);
+    }
 
-      // Public statement (table scene)
-      sequences.push(
-        <Sequence
-          key={`table-r${round.round_number}-${statement.player}`}
-          from={currentFrame}
-          durationInFrames={STATEMENT_DURATION}
-        >
-          <TableScene
-            statement={statement}
-            players={game.players}
-            roundNumber={round.round_number}
-          />
-        </Sequence>
-      );
-      currentFrame += STATEMENT_DURATION;
+    const sortedSubRounds = [...subRounds.entries()].sort((a, b) => a[0] - b[0]);
 
-      // Confessional (deterministic selection)
-      if (shouldShowConfessional(statement.player, game.mafia_player, si, round.round_number)) {
+    for (const [subRound, statements] of sortedSubRounds) {
+      for (let si = 0; si < statements.length; si++) {
+        const statement = statements[si];
+        const isMafia = statement.player === game.mafia_player;
+
+        // Public statement (table scene)
         sequences.push(
           <Sequence
-            key={`confessional-r${round.round_number}-${statement.player}`}
+            key={`table-r${round.round_number}-sr${subRound}-${statement.player}`}
             from={currentFrame}
-            durationInFrames={CONFESSIONAL_DURATION}
+            durationInFrames={STATEMENT_DURATION}
           >
-            <ConfessionalScene statement={statement} isMafia={isMafia} />
+            <TableScene
+              statement={statement}
+              players={game.players}
+              roundNumber={round.round_number}
+            />
           </Sequence>
         );
-        currentFrame += CONFESSIONAL_DURATION;
+        currentFrame += STATEMENT_DURATION;
+
+        // Confessional (deterministic selection)
+        if (shouldShowConfessional(statement.player, game.mafia_player, si, round.round_number, subRound, statements.length)) {
+          sequences.push(
+            <Sequence
+              key={`confessional-r${round.round_number}-sr${subRound}-${statement.player}`}
+              from={currentFrame}
+              durationInFrames={CONFESSIONAL_DURATION}
+            >
+              <ConfessionalScene statement={statement} isMafia={isMafia} />
+            </Sequence>
+          );
+          currentFrame += CONFESSIONAL_DURATION;
+        }
       }
     }
 
@@ -147,12 +170,23 @@ export function calculateDuration(game: GameResult): number {
   let frames = INTRO_DURATION;
 
   for (const round of game.rounds) {
-    for (let si = 0; si < round.statements.length; si++) {
-      frames += STATEMENT_DURATION;
-      if (shouldShowConfessional(round.statements[si].player, game.mafia_player, si, round.round_number)) {
-        frames += CONFESSIONAL_DURATION;
+    // Group by sub-round to match Episode rendering
+    const subRounds = new Map<number, typeof round.statements>();
+    for (const stmt of round.statements) {
+      const sr = stmt.sub_round ?? 1;
+      if (!subRounds.has(sr)) subRounds.set(sr, []);
+      subRounds.get(sr)!.push(stmt);
+    }
+
+    for (const [subRound, statements] of [...subRounds.entries()].sort((a, b) => a[0] - b[0])) {
+      for (let si = 0; si < statements.length; si++) {
+        frames += STATEMENT_DURATION;
+        if (shouldShowConfessional(statements[si].player, game.mafia_player, si, round.round_number, subRound, statements.length)) {
+          frames += CONFESSIONAL_DURATION;
+        }
       }
     }
+
     if (round.votes.length > 0) frames += VOTING_DURATION;
     if (round.eliminated) frames += ELIMINATION_DURATION;
   }

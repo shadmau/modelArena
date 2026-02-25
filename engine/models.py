@@ -27,6 +27,7 @@ class Statement(BaseModel):
     public_text: str
     private_reasoning: str
     round_number: int
+    sub_round: int = 1  # 1-3 within each discussion phase
 
 
 class Vote(BaseModel):
