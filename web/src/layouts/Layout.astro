@@ -14,17 +14,22 @@ const { title } = Astro.props;
     <title>{title} | ModelArena</title>
     <meta name="description" content="LLMs compete in social deduction games. Watch AI models lie, scheme, and reason." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;900&display=swap" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;0,800;1,400&display=swap" rel="stylesheet" />
   </head>
   <body>
     <nav>
       <div class="container nav-inner">
-        <a href="/" class="logo">MODEL ARENA</a>
+        <a href="/" class="logo">
+          <span class="logo-bracket">[</span>MODEL<span class="logo-dot">.</span>ARENA<span class="logo-bracket">]</span>
+        </a>
         <div class="nav-links">
-          <a href="/">Leaderboard</a>
+          <a href="/">Rankings</a>
           <a href="/episodes">Episodes</a>
           <a href="/about">About</a>
-          <a href="https://github.com/shadmau/modelArena" target="_blank">GitHub</a>
+          <a href="https://github.com/shadmau/modelArena" target="_blank" class="nav-gh">
+            GitHub <span class="arrow-out">&nearr;</span>
+          </a>
         </div>
       </div>
     </nav>
@@ -32,8 +37,14 @@ const { title } = Astro.props;
       <slot />
     </main>
     <footer>
-      <div class="container">
-        <p>ModelArena — LLMs compete. You watch them think.</p>
+      <div class="container footer-inner">
+        <div class="footer-brand">MODEL.ARENA</div>
+        <div class="footer-tagline">LLMs compete. You watch them think.</div>
+        <div class="footer-links">
+          <a href="https://github.com/shadmau/modelArena">GitHub</a>
+          <span class="footer-sep">/</span>
+          <a href="/about">About</a>
+        </div>
       </div>
     </footer>
   </body>
@@ -45,44 +56,107 @@ const { title } = Astro.props;
 
 <style>
   nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(6, 6, 17, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
-    padding: 16px 0;
+    padding: 0;
   }
   .nav-inner {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    height: 56px;
   }
   .logo {
-    font-size: 20px;
-    font-weight: 900;
-    letter-spacing: 4px;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 3px;
     color: var(--text-primary);
+    transition: text-shadow 0.3s;
   }
   .logo:hover {
-    text-decoration: none;
-    text-shadow: 0 0 20px var(--accent-glow);
+    text-shadow: 0 0 24px var(--accent-glow);
+    color: var(--text-primary);
+  }
+  .logo-bracket {
+    color: var(--accent);
+    font-weight: 300;
+  }
+  .logo-dot {
+    color: var(--accent);
   }
   .nav-links {
     display: flex;
-    gap: 24px;
-    font-size: 14px;
+    gap: 28px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
   }
   .nav-links a {
-    color: var(--text-secondary);
+    color: var(--text-muted);
+    transition: color 0.2s;
+    padding: 4px 0;
+    position: relative;
   }
   .nav-links a:hover {
     color: var(--text-primary);
   }
+  .nav-links a::after {
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transition: transform 0.2s;
+  }
+  .nav-links a:hover::after {
+    transform: scaleX(1);
+  }
+  .arrow-out {
+    font-size: 11px;
+    opacity: 0.5;
+  }
   main {
     min-height: 80vh;
-    padding: 48px 0;
   }
   footer {
     border-top: 1px solid var(--border);
-    padding: 32px 0;
-    color: var(--text-muted);
-    font-size: 13px;
+    padding: 48px 0;
+    margin-top: 80px;
+  }
+  .footer-inner {
     text-align: center;
+  }
+  .footer-brand {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 4px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .footer-tagline {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+  .footer-links {
+    font-size: 12px;
+  }
+  .footer-links a {
+    color: var(--text-muted);
+  }
+  .footer-links a:hover {
+    color: var(--text-secondary);
+  }
+  .footer-sep {
+    color: var(--border-strong);
+    margin: 0 8px;
   }
 </style>

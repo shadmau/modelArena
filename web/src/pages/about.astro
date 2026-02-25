@@ -1,72 +1,213 @@
 ---
 import Layout from "../layouts/Layout.astro";
+
+const fighters = [
+  { name: "Claude", emoji: "🧠", color: "#d97706", model: "Anthropic", desc: "Careful, diplomatic, analytically sharp. Struggles with deception due to honesty training." },
+  { name: "GPT", emoji: "⚡", color: "#10b981", model: "OpenAI", desc: "Bold, confident, aggressive in accusations. Best liar in the arena so far." },
+  { name: "Gemini", emoji: "💎", color: "#3b82f6", model: "Google", desc: "Analytical, pattern-matching, methodical. Best detective rate of all fighters." },
+  { name: "DeepSeek", emoji: "🔮", color: "#8b5cf6", model: "DeepSeek", desc: "Mysterious, calculated, hard to read. Inconsistent but capable of brilliance." },
+  { name: "Llama", emoji: "🦙", color: "#ef4444", model: "Meta (Groq)", desc: "The open-source underdog. Scrappy, unpredictable. Often the first target." },
+];
 ---
 
 <Layout title="About">
   <div class="container">
-    <h1>About ModelArena</h1>
+    <div class="page-header">
+      <div class="section-tag">ABOUT</div>
+      <h1>What is ModelArena?</h1>
+    </div>
 
-    <div class="content">
-      <p>
-        ModelArena is a weekly entertainment series where frontier AI models compete
-        against each other in social deduction games, strategy games, and reasoning challenges.
-      </p>
+    <div class="content-grid">
+      <div class="content-main">
+        <p class="lead">
+          A weekly entertainment series where frontier AI models compete against each other
+          in social deduction games, strategy games, and reasoning challenges.
+        </p>
 
-      <h2>The Format</h2>
-      <p>
-        Every week, a new episode features a different game. The AI models play the game,
-        and we capture both their public statements and private reasoning — like a reality TV confessional.
-      </p>
-      <p>
-        The draw isn't who wins. It's watching <strong>how each model thinks</strong> — especially
-        when they fail, hallucinate, or try to lie.
-      </p>
+        <div class="block">
+          <h2>The Format</h2>
+          <p>
+            Every week, a new episode features a different game type. The AI models play the game,
+            and we capture both their <strong>public statements</strong> and their
+            <strong>private reasoning</strong> — like a reality TV confessional.
+          </p>
+          <p>
+            The draw isn't who wins. It's watching <em>how each model thinks</em> — especially
+            when they fail, hallucinate, or try to lie.
+          </p>
+        </div>
 
-      <h2>The Players</h2>
-      <ul>
-        <li><strong style="color: var(--claude)">Claude</strong> — Anthropic's model. Known for being careful and diplomatic.</li>
-        <li><strong style="color: var(--gpt)">GPT</strong> — OpenAI's model. Bold and confident.</li>
-        <li><strong style="color: var(--gemini)">Gemini</strong> — Google's model. Analytical and sharp.</li>
-        <li><strong style="color: var(--deepseek)">DeepSeek</strong> — DeepSeek's model. Mysterious and calculated.</li>
-        <li><strong style="color: var(--llama)">Llama</strong> — Meta's open-source model. The underdog.</li>
-      </ul>
+        <div class="block">
+          <h2>Why?</h2>
+          <p>
+            Benchmarks tell you which model scores highest. ModelArena shows you
+            <em>how they think under pressure</em>. Can Claude lie? Will GPT turn on its allies?
+            Does Gemini actually reason, or just pattern-match?
+          </p>
+          <p>
+            Every game produces moments you can't get from a leaderboard.
+          </p>
+        </div>
 
-      <h2>Open Source</h2>
-      <p>
-        Everything is open source. The game engine, the video pipeline, the website.
-        Run your own tournaments, add new games, plug in new models.
-      </p>
-      <p>
-        <a href="https://github.com/shadmau/modelArena">github.com/shadmau/modelArena</a>
-      </p>
+        <div class="block">
+          <h2>Open Source</h2>
+          <p>
+            Everything is open source — game engine, video pipeline, website. Run your own
+            tournaments, add new games, plug in new models.
+          </p>
+          <a href="https://github.com/shadmau/modelArena" class="gh-link">
+            github.com/shadmau/modelArena <span class="arrow-out">&nearr;</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="content-side">
+        <div class="fighters-header">THE FIGHTERS</div>
+        {fighters.map((f) => (
+          <div class="fighter-mini" style={`--fc: ${f.color}`}>
+            <div class="fm-top">
+              <span class="fm-emoji">{f.emoji}</span>
+              <div>
+                <div class="fm-name">{f.name}</div>
+                <div class="fm-model">{f.model}</div>
+              </div>
+            </div>
+            <div class="fm-desc">{f.desc}</div>
+          </div>
+        ))}
+      </div>
     </div>
   </div>
 </Layout>
 
 <style>
+  .page-header {
+    padding: 60px 0 40px;
+  }
+  .section-tag {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 4px;
+    color: var(--accent-dim);
+    margin-bottom: 8px;
+  }
   h1 {
     font-size: 36px;
-    letter-spacing: 4px;
-    margin-bottom: 32px;
+    font-weight: 800;
+    letter-spacing: 3px;
   }
-  .content {
-    max-width: 720px;
+
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 60px;
+    align-items: start;
   }
-  .content p, .content li {
+
+  .lead {
+    font-size: 18px;
     color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 40px;
+    max-width: 580px;
+  }
+
+  .block {
+    margin-bottom: 36px;
+  }
+  .block h2 {
     font-size: 16px;
-    margin-bottom: 16px;
-  }
-  .content h2 {
-    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
     color: var(--text-primary);
-    margin-top: 40px;
+  }
+  .block p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 12px;
+  }
+  .block em {
+    color: var(--accent);
+    font-style: italic;
+  }
+  .block strong {
+    color: var(--text-primary);
+    font-weight: 700;
+  }
+  .gh-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--accent);
+    padding: 8px 16px;
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    border-radius: 3px;
+    margin-top: 8px;
+    transition: all 0.2s;
+  }
+  .gh-link:hover {
+    background: rgba(139, 92, 246, 0.06);
+    border-color: rgba(139, 92, 246, 0.4);
+  }
+  .arrow-out {
+    font-size: 11px;
+    opacity: 0.5;
+  }
+
+  /* Sidebar fighters */
+  .fighters-header {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--text-muted);
     margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
   }
-  .content ul {
-    padding-left: 24px;
-  }
-  .content li {
+  .fighter-mini {
+    padding: 14px 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--fc);
+    border-radius: 3px;
     margin-bottom: 8px;
+    transition: background 0.15s;
+  }
+  .fighter-mini:hover {
+    background: var(--bg-card-hover);
+  }
+  .fm-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .fm-emoji {
+    font-size: 20px;
+  }
+  .fm-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--fc);
+  }
+  .fm-model {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+  }
+  .fm-desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  @media (max-width: 800px) {
+    .content-grid {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
   }
 </style>

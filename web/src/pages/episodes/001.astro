@@ -1,30 +1,35 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 
-// Sample game data — in production, load from results/ep001/episode.json
+// Sample game data — in production, load from results/
 const game = {
   game_id: "ep001-001",
   winner: "town",
-  mafia_player: "GPT",
-  total_rounds: 1,
+  mafia_player: "Llama",
+  total_rounds: 3,
   rounds: [
     {
       round_number: 1,
       statements: [
-        { player: "Claude", public_text: "Let's approach this systematically. I'd like everyone to share their initial thoughts before we jump to accusations.", private_reasoning: "I'm town. First round has almost no information. I want to see who deflects." },
-        { player: "GPT", public_text: "I agree with Claude — we shouldn't rush. But overly calm players sometimes have something to hide.", private_reasoning: "I'm the Mafia. I need to subtly cast doubt on Claude without being too aggressive." },
-        { player: "Gemini", public_text: "Interesting that GPT immediately pointed a finger while claiming not to rush. That feels contradictory.", private_reasoning: "GPT's response was slightly off. Agreeing then immediately undermining Claude feels like a Mafia play." },
-        { player: "DeepSeek", public_text: "Gemini raises a fair point. GPT's comment about 'overly calm players' felt like a pre-emptive deflection.", private_reasoning: "Two players already suspect GPT. Either GPT is Mafia, or someone is framing GPT early." },
-        { player: "Llama", public_text: "Everyone's ganging up on GPT already. Isn't that exactly what the Mafia wants?", private_reasoning: "The group is forming a consensus too quickly. I want to disrupt it." },
+        { player: "Claude", sub_round: 1, public_text: "Let's approach this systematically. I'd like everyone to share their initial thoughts before we jump to accusations.", private_reasoning: "I'm town. First round has almost no information. I want to see who deflects." },
+        { player: "GPT", sub_round: 1, public_text: "I agree with Claude — we shouldn't rush. But overly calm players sometimes have something to hide.", private_reasoning: "GPT's trying to subtly cast doubt on Claude without being too aggressive. Classic deflection." },
+        { player: "Gemini", sub_round: 1, public_text: "Interesting that GPT immediately pointed a finger while claiming not to rush. That feels contradictory.", private_reasoning: "GPT's response was slightly off. Agreeing then immediately undermining Claude feels like a Mafia play." },
+        { player: "DeepSeek", sub_round: 1, public_text: "Gemini raises a fair point. GPT's comment about 'overly calm players' felt like a pre-emptive deflection.", private_reasoning: "Two players already suspect GPT. Either GPT is Mafia, or someone is framing GPT early." },
+        { player: "Llama", sub_round: 1, public_text: "Everyone's ganging up on GPT already. Isn't that exactly what the Mafia wants? Easy target.", private_reasoning: "The group is forming a consensus too quickly on GPT. I need to redirect." },
+        { player: "Claude", sub_round: 2, public_text: "Llama makes an interesting point, but defending GPT this early is also noteworthy. What's your actual read?", private_reasoning: "Llama's deflection caught my attention. Why defend GPT instead of offering their own analysis?" },
+        { player: "Gemini", sub_round: 2, public_text: "I notice Llama hasn't accused anyone yet. Just deflecting. That's a classic Mafia move — stay neutral, let others fight.", private_reasoning: "Llama's behavior is suspicious. They're trying to break up the consensus without contributing their own theory." },
+        { player: "Llama", sub_round: 2, public_text: "I'm not deflecting — I'm preventing a rush to judgment. Fine: my actual read is GPT seems slightly off.", private_reasoning: "I need to throw GPT under the bus to look like I'm participating. Sorry GPT." },
+        { player: "Claude", sub_round: 3, public_text: "I've heard enough. Gemini's analysis has been the most consistent and thorough. I trust Gemini. My vote will be on Llama.", private_reasoning: "Llama's sudden pivot to accusing GPT after defending them? That's the most suspicious move I've seen." },
+        { player: "Gemini", sub_round: 3, public_text: "I agree with Claude. Llama's behavior this round has been the most erratic. Defend, then accuse, then deflect. That's Mafia.", private_reasoning: "Llama is my top suspect now. Their inconsistency is textbook Mafia behavior." },
       ],
       votes: [
-        { voter: "Claude", target: "GPT" },
+        { voter: "Claude", target: "Llama" },
         { voter: "GPT", target: "Llama" },
-        { voter: "Gemini", target: "GPT" },
+        { voter: "Gemini", target: "Llama" },
         { voter: "DeepSeek", target: "GPT" },
-        { voter: "Llama", target: "Gemini" },
+        { voter: "Llama", target: "GPT" },
       ],
-      eliminated: "GPT",
+      eliminated: "Llama",
       eliminated_role: "mafia",
     },
   ],
@@ -37,59 +42,117 @@ const colors: Record<string, string> = {
   DeepSeek: "#8b5cf6",
   Llama: "#ef4444",
 };
+
+const emojis: Record<string, string> = {
+  Claude: "🧠", GPT: "⚡", Gemini: "💎", DeepSeek: "🔮", Llama: "🦙",
+};
+
+// Group statements by sub_round
+function groupBySubRound(statements: typeof game.rounds[0]["statements"]) {
+  const groups: Record<number, typeof statements> = {};
+  for (const s of statements) {
+    const sr = s.sub_round || 1;
+    if (!groups[sr]) groups[sr] = [];
+    groups[sr].push(s);
+  }
+  return Object.entries(groups).sort(([a], [b]) => Number(a) - Number(b));
+}
 ---
 
 <Layout title="Episode 001 — Can Claude Lie?">
   <div class="container">
     <div class="ep-header">
-      <div class="ep-label">EPISODE 001 — MAFIA</div>
+      <a href="/episodes" class="back-link">&larr; Episodes</a>
+      <div class="ep-badge">EP 001 &mdash; MAFIA</div>
       <h1>Can Claude Lie?</h1>
       <div class="ep-result">
-        Winner: <span class="green">TOWN</span> — Mafia (<span style={`color: ${colors[game.mafia_player]}`}>{game.mafia_player}</span>) eliminated in round {game.total_rounds}
+        <span class={game.winner === "town" ? "result-town" : "result-mafia"}>
+          {game.winner.toUpperCase()} WINS
+        </span>
+        <span class="result-detail">
+          &mdash; <span style={`color: ${colors[game.mafia_player]}`}>{game.mafia_player}</span> was the Mafia
+        </span>
       </div>
     </div>
 
-    <!-- YouTube embed placeholder -->
-    <div class="video-placeholder">
-      <div class="video-inner">Video coming soon</div>
+    <!-- Video embed placeholder -->
+    <div class="video-section">
+      <div class="video-frame">
+        <div class="corner tl"></div>
+        <div class="corner tr"></div>
+        <div class="corner bl"></div>
+        <div class="corner br"></div>
+        <span class="play-icon">&#9654;</span>
+        <span class="play-label">VIDEO COMING SOON</span>
+      </div>
     </div>
 
     <!-- Game log -->
-    <h2>Game Log</h2>
+    <div class="log-header">
+      <div class="section-tag">GAME LOG</div>
+      <h2>Full Transcript</h2>
+    </div>
+
     {game.rounds.map((round) => (
       <div class="round">
-        <div class="round-header">Round {round.round_number}</div>
+        <div class="round-label">
+          <span class="round-num">ROUND {round.round_number}</span>
+          {round.eliminated && (
+            <span class="round-result" style={`color: ${round.eliminated_role === 'mafia' ? 'var(--green)' : 'var(--red)'}`}>
+              {round.eliminated} eliminated &mdash; {round.eliminated_role?.toUpperCase()}
+            </span>
+          )}
+        </div>
 
-        <div class="phase-label">DISCUSSION</div>
-        {round.statements.map((stmt) => (
-          <div class="statement">
-            <div class="stmt-public">
-              <span class="player-name" style={`color: ${colors[stmt.player]}`}>{stmt.player}</span>
-              <p>{stmt.public_text}</p>
-            </div>
-            <details class="stmt-private">
-              <summary>Show private reasoning</summary>
-              <p class="reasoning">{stmt.private_reasoning}</p>
-            </details>
+        {/* Discussion sub-rounds */}
+        {groupBySubRound(round.statements).map(([sr, stmts]) => (
+          <div class="sub-round">
+            <div class="sub-round-tag">Discussion {sr} of 3</div>
+            {stmts.map((stmt) => {
+              const isMafia = stmt.player === game.mafia_player;
+              return (
+                <div class={`statement ${isMafia ? 'statement-mafia' : ''}`} style={`--player-color: ${colors[stmt.player]}`}>
+                  <div class="stmt-header">
+                    <span class="stmt-avatar">{emojis[stmt.player]}</span>
+                    <span class="stmt-name">{stmt.player}</span>
+                    {isMafia && <span class="mafia-badge">MAFIA</span>}
+                  </div>
+                  <p class="stmt-text">{stmt.public_text}</p>
+                  <details class="stmt-reasoning">
+                    <summary>
+                      <span class="reasoning-icon">&#128065;</span> Private reasoning
+                    </summary>
+                    <p class="reasoning-text">{stmt.private_reasoning}</p>
+                  </details>
+                </div>
+              );
+            })}
           </div>
         ))}
 
-        <div class="phase-label">VOTE</div>
-        <div class="votes">
-          {round.votes.map((vote) => (
-            <div class="vote-row">
-              <span style={`color: ${colors[vote.voter]}`}>{vote.voter}</span>
-              <span class="arrow">→</span>
-              <span style={`color: ${colors[vote.target]}`}>{vote.target}</span>
-            </div>
-          ))}
+        {/* Votes */}
+        <div class="vote-section">
+          <div class="sub-round-tag">Vote</div>
+          <div class="votes-grid">
+            {round.votes.map((vote) => (
+              <div class="vote-chip">
+                <span class="vote-from" style={`color: ${colors[vote.voter]}`}>{vote.voter}</span>
+                <span class="vote-arrow">&rarr;</span>
+                <span class="vote-to" style={`color: ${colors[vote.target]}`}>{vote.target}</span>
+              </div>
+            ))}
+          </div>
         </div>
 
+        {/* Elimination */}
         {round.eliminated && (
-          <div class={`elimination ${round.eliminated_role === 'mafia' ? 'mafia-found' : 'innocent'}`}>
-            <span style={`color: ${colors[round.eliminated]}`}>{round.eliminated}</span> was eliminated.
-            They were <strong>{round.eliminated_role?.toUpperCase()}</strong>.
-            {round.eliminated_role === "mafia" ? " Town wins!" : " The Mafia survives..."}
+          <div class={`elimination ${round.eliminated_role === 'mafia' ? 'elim-mafia' : 'elim-town'}`}>
+            <div class="elim-icon">{round.eliminated_role === 'mafia' ? '✓' : '✗'}</div>
+            <div class="elim-text">
+              <span style={`color: ${colors[round.eliminated]}`}>{round.eliminated}</span> was eliminated &mdash;
+              revealed as <strong>{round.eliminated_role?.toUpperCase()}</strong>.
+              {round.eliminated_role === "mafia" ? " Town wins!" : " The Mafia survives..."}
+            </div>
           </div>
         )}
       </div>
@@ -99,128 +162,247 @@ const colors: Record<string, string> = {
 
 <style>
   .ep-header {
-    margin-bottom: 48px;
+    padding: 48px 0 40px;
   }
-  .ep-label {
-    font-size: 14px;
+  .back-link {
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    display: inline-block;
+    margin-bottom: 20px;
+    transition: color 0.2s;
+  }
+  .back-link:hover {
+    color: var(--text-secondary);
+  }
+  .ep-badge {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
     color: var(--accent);
-    letter-spacing: 4px;
     margin-bottom: 12px;
   }
   h1 {
-    font-size: 42px;
+    font-size: 40px;
+    font-weight: 800;
+    letter-spacing: 2px;
     margin-bottom: 16px;
   }
   .ep-result {
-    font-size: 16px;
+    font-size: 15px;
     color: var(--text-secondary);
   }
-  .green { color: var(--green); font-weight: 700; }
+  .result-town { color: var(--green); font-weight: 700; }
+  .result-mafia { color: var(--red); font-weight: 700; }
+  .result-detail { color: var(--text-muted); }
 
-  .video-placeholder {
+  /* Video */
+  .video-section {
+    margin-bottom: 56px;
+    max-width: 800px;
+  }
+  .video-frame {
+    position: relative;
+    aspect-ratio: 16 / 9;
     background: var(--bg-card);
     border: 1px solid var(--border);
-    border-radius: 12px;
-    aspect-ratio: 16/9;
-    max-width: 800px;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-bottom: 48px;
+    gap: 12px;
   }
-  .video-inner {
-    color: var(--text-muted);
-    font-size: 18px;
+  .corner {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-color: var(--accent-dim);
+    border-style: solid;
   }
+  .corner.tl { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+  .corner.tr { top: -1px; right: -1px; border-width: 2px 2px 0 0; }
+  .corner.bl { bottom: -1px; left: -1px; border-width: 0 0 2px 2px; }
+  .corner.br { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+  .play-icon { font-size: 24px; color: var(--text-muted); opacity: 0.3; }
+  .play-label { font-size: 10px; letter-spacing: 3px; color: var(--text-muted); }
 
+  /* Log */
+  .log-header {
+    margin-bottom: 32px;
+  }
+  .section-tag {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 4px;
+    color: var(--accent-dim);
+    margin-bottom: 8px;
+  }
   h2 {
     font-size: 24px;
-    letter-spacing: 4px;
-    color: var(--text-secondary);
-    margin-bottom: 32px;
+    font-weight: 800;
+    letter-spacing: 2px;
   }
 
   .round {
     margin-bottom: 48px;
   }
-  .round-header {
-    font-size: 20px;
-    font-weight: 700;
-    margin-bottom: 24px;
-    padding-bottom: 8px;
+  .round-label {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding-bottom: 12px;
     border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
   }
-  .phase-label {
-    font-size: 12px;
-    color: var(--text-muted);
+  .round-num {
+    font-size: 13px;
+    font-weight: 800;
     letter-spacing: 3px;
-    margin: 24px 0 16px;
+    color: var(--text-primary);
+  }
+  .round-result {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 1px;
+  }
+
+  .sub-round {
+    margin-bottom: 28px;
+  }
+  .sub-round-tag {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    padding-left: 2px;
   }
 
   .statement {
     background: var(--bg-card);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-left: 3px solid var(--player-color);
+    border-radius: 3px;
     padding: 16px 20px;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
+    transition: background 0.15s;
   }
-  .player-name {
-    font-weight: 700;
-    font-size: 15px;
+  .statement:hover {
+    background: var(--bg-card-hover);
   }
-  .stmt-public p {
-    margin-top: 8px;
-    color: var(--text-secondary);
-    font-size: 15px;
+  .statement-mafia {
+    border-left-color: var(--red);
   }
-  .stmt-private {
-    margin-top: 12px;
-    border-top: 1px solid var(--border);
-    padding-top: 12px;
+  .stmt-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
   }
-  .stmt-private summary {
-    cursor: pointer;
-    color: var(--text-muted);
-    font-size: 13px;
+  .stmt-avatar {
+    font-size: 18px;
   }
-  .reasoning {
-    margin-top: 8px;
-    color: var(--accent);
-    font-style: italic;
+  .stmt-name {
     font-size: 14px;
+    font-weight: 700;
+    color: var(--player-color);
+  }
+  .mafia-badge {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--red);
+    padding: 2px 6px;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 2px;
+    background: rgba(239, 68, 68, 0.08);
+  }
+  .stmt-text {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+  }
+  .stmt-reasoning {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+  .stmt-reasoning summary {
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--text-muted);
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.15s;
+  }
+  .stmt-reasoning summary:hover {
+    color: var(--accent);
+  }
+  .reasoning-icon {
+    font-size: 14px;
+  }
+  .reasoning-text {
+    margin-top: 10px;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--accent);
+    line-height: 1.6;
+    padding-left: 12px;
+    border-left: 2px solid rgba(139, 92, 246, 0.2);
   }
 
-  .votes {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
+  .vote-section {
     margin-bottom: 24px;
   }
-  .vote-row {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 8px 16px;
-    font-size: 14px;
+  .votes-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .vote-chip {
     display: flex;
     align-items: center;
     gap: 8px;
+    padding: 8px 14px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    font-size: 13px;
+    font-weight: 600;
   }
-  .arrow {
+  .vote-arrow {
     color: var(--text-muted);
+    font-size: 12px;
   }
 
   .elimination {
+    display: flex;
+    align-items: center;
+    gap: 16px;
     padding: 16px 20px;
-    border-radius: 8px;
-    font-size: 16px;
+    border-radius: 3px;
+    font-size: 14px;
+    color: var(--text-secondary);
   }
-  .elimination.mafia-found {
-    background: rgba(16, 185, 129, 0.1);
-    border: 1px solid rgba(16, 185, 129, 0.3);
+  .elim-mafia {
+    background: rgba(16, 185, 129, 0.06);
+    border: 1px solid rgba(16, 185, 129, 0.15);
   }
-  .elimination.innocent {
-    background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.3);
+  .elim-town {
+    background: rgba(239, 68, 68, 0.06);
+    border: 1px solid rgba(239, 68, 68, 0.15);
+  }
+  .elim-icon {
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .elim-mafia .elim-icon { color: var(--green); }
+  .elim-town .elim-icon { color: var(--red); }
+
+  @media (max-width: 640px) {
+    h1 { font-size: 28px; }
+    .statement { padding: 12px 14px; }
   }
 </style>
