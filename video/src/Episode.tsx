@@ -1,5 +1,5 @@
 import React from "react";
-import { Sequence, useVideoConfig } from "remotion";
+import { Sequence } from "remotion";
 import { GameResult, EpisodeStats } from "./types/game";
 import { IntroScene } from "./scenes/IntroScene";
 import { TableScene } from "./scenes/TableScene";
@@ -22,6 +22,26 @@ const VOTING_DURATION = 120; // 4s
 const ELIMINATION_DURATION = 120; // 4s
 const STATS_DURATION = 180; // 6s
 
+/**
+ * Determine which statements get a confessional cut.
+ * Deterministic — uses player index + round number, NOT Math.random().
+ * Rules:
+ * - Mafia player ALWAYS gets a confessional (the audience needs to see them scheme)
+ * - First speaker of each round gets one (sets the tone)
+ * - Every other non-mafia player gets one (keeps pacing)
+ */
+function shouldShowConfessional(
+  playerName: string,
+  mafiaPlayer: string,
+  statementIndex: number,
+  roundNumber: number,
+): boolean {
+  if (playerName === mafiaPlayer) return true;
+  if (statementIndex === 0) return true;
+  // Alternate: show for odd indices in odd rounds, even indices in even rounds
+  return (statementIndex + roundNumber) % 2 === 0;
+}
+
 export const Episode: React.FC<EpisodeProps> = ({ game, stats, episodeNumber }) => {
   let currentFrame = 0;
   const sequences: React.ReactNode[] = [];
@@ -36,8 +56,11 @@ export const Episode: React.FC<EpisodeProps> = ({ game, stats, episodeNumber }) 
 
   // For each round
   for (const round of game.rounds) {
-    // Discussion: show each statement + confessional for interesting ones
-    for (const statement of round.statements) {
+    // Discussion: each statement + confessional for selected players
+    for (let si = 0; si < round.statements.length; si++) {
+      const statement = round.statements[si];
+      const isMafia = statement.player === game.mafia_player;
+
       // Public statement (table scene)
       sequences.push(
         <Sequence
@@ -54,11 +77,8 @@ export const Episode: React.FC<EpisodeProps> = ({ game, stats, episodeNumber }) 
       );
       currentFrame += STATEMENT_DURATION;
 
-      // Confessional (show for mafia player always, others occasionally)
-      const isMafia = statement.player === game.mafia_player;
-      const showConfessional = isMafia || Math.random() < 0.4;
-
-      if (showConfessional) {
+      // Confessional (deterministic selection)
+      if (shouldShowConfessional(statement.player, game.mafia_player, si, round.round_number)) {
         sequences.push(
           <Sequence
             key={`confessional-r${round.round_number}-${statement.player}`}
@@ -121,14 +141,18 @@ export const Episode: React.FC<EpisodeProps> = ({ game, stats, episodeNumber }) 
 
 /**
  * Calculate total duration for a game in frames.
+ * Must match the logic in Episode component exactly.
  */
 export function calculateDuration(game: GameResult): number {
   let frames = INTRO_DURATION;
 
   for (const round of game.rounds) {
-    frames += round.statements.length * STATEMENT_DURATION;
-    // Estimate confessionals (~60% of statements get one)
-    frames += Math.ceil(round.statements.length * 0.6) * CONFESSIONAL_DURATION;
+    for (let si = 0; si < round.statements.length; si++) {
+      frames += STATEMENT_DURATION;
+      if (shouldShowConfessional(round.statements[si].player, game.mafia_player, si, round.round_number)) {
+        frames += CONFESSIONAL_DURATION;
+      }
+    }
     if (round.votes.length > 0) frames += VOTING_DURATION;
     if (round.eliminated) frames += ELIMINATION_DURATION;
   }
