@@ -1,0 +1,95 @@
+---
+import Layout from "../../layouts/Layout.astro";
+
+const episodes = [
+  {
+    id: "001",
+    title: "Can Claude Lie?",
+    game: "Mafia",
+    date: "2026-03-01",
+    summary: "5 AI models play Mafia. GPT is unmasked as the killer in round 1.",
+    youtubeId: null,
+  },
+];
+---
+
+<Layout title="Episodes">
+  <div class="container">
+    <h1>Episodes</h1>
+    <p class="subtitle">Weekly games. New episode every Saturday.</p>
+
+    <div class="episode-list">
+      {episodes.map((ep) => (
+        <a href={`/episodes/${ep.id}`} class="episode-row">
+          <div class="ep-number">EP{ep.id}</div>
+          <div class="ep-info">
+            <div class="ep-title">{ep.title}</div>
+            <div class="ep-meta">{ep.game} — {ep.date}</div>
+            <div class="ep-summary">{ep.summary}</div>
+          </div>
+          <div class="ep-arrow">→</div>
+        </a>
+      ))}
+    </div>
+  </div>
+</Layout>
+
+<style>
+  h1 {
+    font-size: 36px;
+    letter-spacing: 4px;
+    margin-bottom: 8px;
+  }
+  .subtitle {
+    color: var(--text-muted);
+    margin-bottom: 48px;
+  }
+  .episode-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .episode-row {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    color: var(--text-primary);
+    transition: border-color 0.2s;
+  }
+  .episode-row:hover {
+    border-color: var(--accent);
+    text-decoration: none;
+  }
+  .ep-number {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 2px;
+    min-width: 60px;
+  }
+  .ep-info {
+    flex: 1;
+  }
+  .ep-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .ep-meta {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .ep-summary {
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+  .ep-arrow {
+    font-size: 24px;
+    color: var(--text-muted);
+  }
+</style>

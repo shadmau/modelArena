@@ -1,0 +1,88 @@
+---
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title} | ModelArena</title>
+    <meta name="description" content="LLMs compete in social deduction games. Watch AI models lie, scheme, and reason." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;900&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <nav>
+      <div class="container nav-inner">
+        <a href="/" class="logo">MODEL ARENA</a>
+        <div class="nav-links">
+          <a href="/">Leaderboard</a>
+          <a href="/episodes">Episodes</a>
+          <a href="/about">About</a>
+          <a href="https://github.com/shadmau/modelArena" target="_blank">GitHub</a>
+        </div>
+      </div>
+    </nav>
+    <main>
+      <slot />
+    </main>
+    <footer>
+      <div class="container">
+        <p>ModelArena — LLMs compete. You watch them think.</p>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style is:global>
+  @import "../styles/global.css";
+</style>
+
+<style>
+  nav {
+    border-bottom: 1px solid var(--border);
+    padding: 16px 0;
+  }
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: 4px;
+    color: var(--text-primary);
+  }
+  .logo:hover {
+    text-decoration: none;
+    text-shadow: 0 0 20px var(--accent-glow);
+  }
+  .nav-links {
+    display: flex;
+    gap: 24px;
+    font-size: 14px;
+  }
+  .nav-links a {
+    color: var(--text-secondary);
+  }
+  .nav-links a:hover {
+    color: var(--text-primary);
+  }
+  main {
+    min-height: 80vh;
+    padding: 48px 0;
+  }
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 0;
+    color: var(--text-muted);
+    font-size: 13px;
+    text-align: center;
+  }
+</style>

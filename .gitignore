@@ -29,3 +29,5 @@ video/out/
 # OS
 .DS_Store
 Thumbs.db
+.astro/
+web/dist/
