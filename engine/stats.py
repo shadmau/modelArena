@@ -10,7 +10,6 @@ def compute_episode_stats(games: list[GameResult]) -> dict:
     player_stats: dict[str, dict] = {}
 
     for game in games:
-        # Build lookup for this game
         player_roles = {p.name: p.role for p in game.players}
 
         for player in game.players:
@@ -50,35 +49,29 @@ def compute_episode_stats(games: list[GameResult]) -> dict:
                 else:
                     stats["wins_as_town"] += 1
 
-        # Track per-round data
         alive_at_round_start = {p.name for p in game.players}
 
         for i, round_data in enumerate(game.rounds):
-            # Track survival
             for name in alive_at_round_start:
                 if name in player_stats:
                     player_stats[name]["survived_rounds_total"] += 1
 
-            # Track eliminations
             if round_data.eliminated:
                 player_stats[round_data.eliminated]["times_eliminated"] += 1
                 if i == 0:
                     player_stats[round_data.eliminated]["times_first_eliminated"] += 1
                 alive_at_round_start.discard(round_data.eliminated)
 
-            # Track votes
             for vote in round_data.votes:
                 if vote.target in player_stats:
                     player_stats[vote.target]["votes_received_total"] += 1
 
-                # Track correct votes: town player voted for actual mafia
                 voter_role = player_roles.get(vote.voter)
                 if voter_role == Role.TOWN:
                     player_stats[vote.voter]["total_votes_cast_as_town"] += 1
                     if vote.target == game.mafia_player:
                         player_stats[vote.voter]["votes_cast_for_mafia"] += 1
 
-    # Compute derived stats
     for name, stats in player_stats.items():
         gp = stats["games_played"]
         stats["win_rate"] = _pct(stats["wins"], gp)
@@ -90,12 +83,10 @@ def compute_episode_stats(games: list[GameResult]) -> dict:
             stats["votes_cast_for_mafia"], stats["total_votes_cast_as_town"]
         )
 
-        # Average rounds survived per game
         stats["avg_survival"] = (
             round(stats["survived_rounds_total"] / gp, 1) if gp > 0 else 0
         )
 
-    # Superlatives
     superlatives = _compute_superlatives(player_stats)
 
     return {

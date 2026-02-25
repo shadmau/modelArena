@@ -8,7 +8,7 @@ from pathlib import Path
 
 import click
 
-from engine.games.mafia import MafiaGame, run_episode
+from engine.games.mafia import run_episode
 from engine.models import EpisodeResult
 from engine.players.llm_player import LLMPlayer, get_default_players
 from engine.players.mock_player import MockLLMPlayer
@@ -49,7 +49,6 @@ def mafia(games: int, episode_id: str, output: str, dry_run: bool):
         stats=stats,
     )
 
-    # Write output
     out_dir = Path(output) / episode_id
     out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -70,7 +69,6 @@ def mafia(games: int, episode_id: str, output: str, dry_run: bool):
 
     _print_summary(stats, dry_run)
 
-    # Print API cost estimate if live
     if not dry_run:
         _print_costs(players)
 
@@ -107,7 +105,6 @@ def generate_sample(games: int, output: str):
         game_file = out_dir / f"{game_result.game_id}.json"
         game_file.write_text(game_result.model_dump_json(indent=2))
 
-    # Write stats
     stats_file = out_dir / "stats.json"
     stats_file.write_text(json.dumps(stats, indent=2))
 
@@ -131,7 +128,7 @@ def _print_summary(stats: dict, dry_run: bool = False):
             f"{ps['detection_rate']:>5.1f}%"
         )
 
-    click.echo(f"\n  Awards:")
+    click.echo("\n  Awards:")
     for title, name in stats["superlatives"].items():
         label = title.replace("_", " ").title()
         click.echo(f"    {label}: {name}")
@@ -145,7 +142,7 @@ def _print_costs(players: list):
     total_retries = sum(p.stats.retries for p in players if hasattr(p, "stats"))
 
     if total_calls > 0:
-        click.echo(f"  API Usage:")
+        click.echo("  API Usage:")
         click.echo(f"    Calls: {total_calls} (retries: {total_retries})")
         click.echo(f"    Tokens: {total_prompt:,} prompt + {total_completion:,} completion")
 

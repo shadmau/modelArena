@@ -19,8 +19,7 @@ import os
 import sys
 from pathlib import Path
 
-# Voice IDs per character — configure these after selecting voices in ElevenLabs
-# Default IDs are placeholders; replace with your actual voice IDs.
+# Default IDs are placeholders — replace with real voice IDs from ElevenLabs.
 VOICE_MAP = {
     "Claude": os.environ.get("VOICE_ID_CLAUDE", "pNInz6obpgDQGcFmaJgB"),   # Adam
     "GPT": os.environ.get("VOICE_ID_GPT", "ErXwobaYiN019PkySvjV"),         # Antoni
@@ -29,7 +28,6 @@ VOICE_MAP = {
     "Llama": os.environ.get("VOICE_ID_LLAMA", "nPczCjzI2devNBz1zQrb"),     # Brian
 }
 
-# ElevenLabs model and settings
 TTS_MODEL = "eleven_turbo_v2"
 VOICE_SETTINGS_NORMAL = {
     "stability": 0.5,
@@ -95,7 +93,6 @@ def process_game(game_path: Path, output_dir: Path) -> None:
                 print(f"  WARN: No voice configured for {player}, skipping")
                 continue
 
-            # Public statement audio
             public_file = output_dir / game_id / f"r{round_num}-sr{sub_round}-{player}.mp3"
             if not public_file.exists():
                 print(f"  Generating: {player} R{round_num} SR{sub_round} (public)")

@@ -5,13 +5,12 @@ from __future__ import annotations
 import json
 import logging
 import re
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 from engine.models import PlayerInfo
 
 logger = logging.getLogger(__name__)
 
-# Model name mapping for LiteLLM
 DEFAULT_MODELS = {
     "Claude": "anthropic/claude-sonnet-4-20250514",
     "GPT": "openai/gpt-4o",
@@ -76,7 +75,6 @@ class LLMPlayer:
                 )
                 content = response.choices[0].message.content.strip()
 
-                # Track token usage
                 if hasattr(response, "usage") and response.usage:
                     self.stats.total_prompt_tokens += response.usage.prompt_tokens or 0
                     self.stats.total_completion_tokens += response.usage.completion_tokens or 0
@@ -108,18 +106,16 @@ class LLMPlayer:
 
 def _parse_json_response(content: str) -> dict[str, str]:
     """Parse JSON from LLM response, handling common formatting issues."""
-    # Strip markdown code fences
     fence_match = _CODE_FENCE_RE.match(content)
     if fence_match:
         content = fence_match.group(1)
 
-    # Try direct parse
     try:
         return json.loads(content)
     except json.JSONDecodeError:
         pass
 
-    # Try to find JSON object in the response
+    # Fallback: extract first JSON object from surrounding text
     brace_start = content.find("{")
     brace_end = content.rfind("}")
     if brace_start != -1 and brace_end > brace_start:

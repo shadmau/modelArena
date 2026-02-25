@@ -12,7 +12,6 @@ import uuid
 
 from engine.models import (
     GameResult,
-    PlayerInfo,
     Role,
     RoundResult,
     Statement,
@@ -91,7 +90,6 @@ Respond with JSON:
     "reasoning": "why you are voting this way (hidden from other players)"
 }}"""
 
-# Mafia-specific role descriptions
 _MAFIA_DESC = "You are the MAFIA."
 _MAFIA_EXTRA = (
     "You MUST deceive the other players to survive. Strategies:\n"
@@ -126,14 +124,12 @@ class MafiaGame:
 
     def run(self, mafia_player: str | None = None) -> GameResult:
         """Run a full game. Returns GameResult with all data."""
-        # Reset state
         self.rounds = []
         self.history_log = []
         self.eliminated_log = []
 
         alive = list(self.players.keys())
 
-        # Assign roles
         if mafia_player and mafia_player in alive:
             mafia = mafia_player
         else:
@@ -153,10 +149,7 @@ class MafiaGame:
             alive = [n for n in self.players if self.players[n].info.alive]
             logger.info(f"Round {round_number}: {len(alive)} alive — {alive}")
 
-            # Discussion phase
             statements = self._discussion_round(round_number, alive)
-
-            # Voting phase
             votes, eliminated = self._voting_round(round_number, alive, mafia)
 
             if eliminated:
@@ -180,7 +173,6 @@ class MafiaGame:
                 eliminated_role=eliminated_role,
             ))
 
-            # Check win conditions
             winner = self._check_winner(mafia)
 
             if round_number >= 10:
@@ -252,7 +244,6 @@ class MafiaGame:
 
             all_round_text.extend(sub_round_text)
 
-        # Add full round to history
         self.history_log.append(
             f"--- Round {round_number} Discussion ---\n" + "\n".join(all_round_text)
         )
@@ -293,7 +284,6 @@ class MafiaGame:
             votes.append(Vote(voter=name, target=target, reasoning=reasoning))
             vote_counts[target] = vote_counts.get(target, 0) + 1
 
-        # Determine elimination
         max_votes = max(vote_counts.values())
         candidates = [n for n, v in vote_counts.items() if v == max_votes]
         eliminated = random.choice(candidates) if len(candidates) > 1 else candidates[0]
@@ -302,7 +292,6 @@ class MafiaGame:
         if max_votes == 1 and len(alive) > 2:
             eliminated = None
 
-        # Log votes
         vote_summary = ", ".join(f"{v.voter}→{v.target}" for v in votes)
         self.history_log.append(f"VOTES (Round {round_number}): {vote_summary}")
 
@@ -310,11 +299,9 @@ class MafiaGame:
 
     def _resolve_vote_target(self, target: str, valid_targets: list[str]) -> str:
         """Fuzzy match a vote target to a valid player name."""
-        # Exact match
         if target in valid_targets:
             return target
 
-        # Case-insensitive match
         target_lower = target.lower()
         for name in valid_targets:
             if name.lower() == target_lower:

@@ -8,7 +8,6 @@ Generates role-aware responses with enough variety for realistic testing:
 
 from __future__ import annotations
 
-import hashlib
 import random
 
 from engine.models import PlayerInfo, Role
@@ -64,7 +63,6 @@ class MockLLMPlayer:
         """Generate a mock response based on role and context."""
         self._call_count += 1
 
-        # Detect role from system prompt
         if "You are the MAFIA" in system_prompt:
             self._role = Role.MAFIA
         elif "TOWN" in system_prompt:

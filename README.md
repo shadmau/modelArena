@@ -24,7 +24,7 @@ pytest
 
 ## API Keys
 
-Copy `.env.example` to `.env` and add your keys:
+Copy `.env.example` to `.env` and add API keys:
 
 ```
 ANTHROPIC_API_KEY=
@@ -41,8 +41,8 @@ engine/          # Python game engine
   games/         # Game implementations (mafia, poker, trivia, ...)
   players/       # LLM player adapters (via LiteLLM)
   cli.py         # CLI to run games
-video/           # Remotion video generation (coming soon)
-web/             # Website (coming soon)
+video/           # Remotion video pipeline (7 scenes, TypeScript/React)
+web/             # Astro static site (leaderboard, episode pages, game logs)
 results/         # Game result JSONs
 ```
 
