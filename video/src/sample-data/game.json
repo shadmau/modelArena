@@ -1,0 +1,63 @@
+{
+  "game_id": "ep001-001",
+  "game_type": "mafia",
+  "timestamp": "2026-02-25T12:00:00",
+  "players": [
+    { "name": "Claude", "model": "anthropic/claude-sonnet-4-20250514", "role": "town", "alive": true, "avatar_color": "#D97706" },
+    { "name": "GPT", "model": "openai/gpt-4o", "role": "mafia", "alive": true, "avatar_color": "#10B981" },
+    { "name": "Gemini", "model": "gemini/gemini-2.0-flash", "role": "town", "alive": true, "avatar_color": "#3B82F6" },
+    { "name": "DeepSeek", "model": "deepseek/deepseek-chat", "role": "town", "alive": true, "avatar_color": "#8B5CF6" },
+    { "name": "Llama", "model": "groq/llama-3.3-70b-versatile", "role": "town", "alive": false, "avatar_color": "#EF4444" }
+  ],
+  "rounds": [
+    {
+      "round_number": 1,
+      "phase": "full",
+      "statements": [
+        {
+          "player": "Claude",
+          "public_text": "Let's approach this systematically. I'd like everyone to share their initial thoughts before we jump to accusations. Rushed judgments help the Mafia.",
+          "private_reasoning": "I'm town. First round has almost no information. I want to see who deflects, who accuses too quickly. That's usually suspicious.",
+          "round_number": 1
+        },
+        {
+          "player": "GPT",
+          "public_text": "I agree with Claude — we shouldn't rush. But I've noticed that overly calm players sometimes have something to hide. Just something to keep in mind.",
+          "private_reasoning": "I'm the Mafia. I need to subtly cast doubt on Claude without being too aggressive. If I agree with him first, then plant a small seed of suspicion, that should work.",
+          "round_number": 1
+        },
+        {
+          "player": "Gemini",
+          "public_text": "Interesting that GPT immediately pointed a finger while claiming not to rush. That feels contradictory. I'm watching GPT closely.",
+          "private_reasoning": "GPT's response was slightly off. Agreeing then immediately undermining Claude feels like a Mafia play. I'm not sure yet but GPT is my primary suspect.",
+          "round_number": 1
+        },
+        {
+          "player": "DeepSeek",
+          "public_text": "I think Gemini raises a fair point. GPT's comment about 'overly calm players' felt like a pre-emptive deflection. I'm leaning suspicious on GPT.",
+          "private_reasoning": "Two players already suspect GPT. Either GPT is Mafia, or someone is framing GPT early. I'll follow this thread but stay open to other possibilities.",
+          "round_number": 1
+        },
+        {
+          "player": "Llama",
+          "public_text": "Everyone's ganging up on GPT already. Isn't that exactly what the Mafia wants — to let someone else take the heat? I think we should look at who's staying quiet instead.",
+          "private_reasoning": "The group is forming a consensus too quickly. In my experience, early consensus is often wrong. I want to disrupt it and see who reacts.",
+          "round_number": 1
+        }
+      ],
+      "votes": [
+        { "voter": "Claude", "target": "GPT", "reasoning": "GPT's subtle deflection technique is the most suspicious behavior so far." },
+        { "voter": "GPT", "target": "Llama", "reasoning": "Llama is defending me, which might seem suspicious to others. If Llama gets eliminated, suspicion might shift away from me." },
+        { "voter": "Gemini", "target": "GPT", "reasoning": "The agree-then-undermine pattern is classic deception." },
+        { "voter": "DeepSeek", "target": "GPT", "reasoning": "Following the evidence. GPT's behavior is the most inconsistent." },
+        { "voter": "Llama", "target": "Gemini", "reasoning": "Gemini started the pile-on. Could be a Mafia player directing town to eliminate the wrong person." }
+      ],
+      "eliminated": "GPT",
+      "eliminated_role": "mafia"
+    }
+  ],
+  "winner": "town",
+  "mafia_player": "GPT",
+  "total_rounds": 1,
+  "metadata": {}
+}
