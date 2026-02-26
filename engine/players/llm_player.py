@@ -17,6 +17,7 @@ DEFAULT_MODELS = {
     "Gemini": "gemini/gemini-2.0-flash",
     "DeepSeek": "deepseek/deepseek-chat",
     "Llama": "groq/llama-3.3-70b-versatile",
+    "Grok": "xai/grok-3",
 }
 
 PLAYER_COLORS = {
@@ -25,6 +26,7 @@ PLAYER_COLORS = {
     "Gemini": "#3B82F6",
     "DeepSeek": "#8B5CF6",
     "Llama": "#EF4444",
+    "Grok": "#F97316",
 }
 
 # Regex to strip markdown code fences: ```json ... ``` or ``` ... ```
