@@ -44,7 +44,7 @@ if (latestEp) {
         </div>
       </div>
       <div class="hero-cta-wrap">
-        <a href="https://youtube.com/@modelarena" target="_blank" class="hero-cta">
+        <a href="https://www.youtube.com/@ModelArenaTV" target="_blank" class="hero-cta">
           Watch Episode 1<span class="btn-arrow"> →</span>
         </a>
       </div>
@@ -121,7 +121,7 @@ if (latestEp) {
             </div>
           )}
           <div class="ep-actions">
-            <a href="https://youtube.com/@modelarena" target="_blank" rel="noopener" class="btn">
+            <a href="https://www.youtube.com/@ModelArenaTV" target="_blank" rel="noopener" class="btn">
               Watch on YouTube <span class="btn-arrow">↗</span>
             </a>
             <a href={latestEp ? `/episodes/${latestEp.id}#transcript` : "/episodes"} class="btn btn-outline">
@@ -577,26 +577,33 @@ if (latestEp) {
       background: transparent;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
     .fighter-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
-      padding: 20px;
+      align-items: center;
+      gap: 0;
+      padding: 16px 20px;
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
     }
     .fighter-row-champion {
       border-left: 3px solid var(--gold);
     }
-    .rank { width: 32px; }
-    .name-col { flex: 1; min-width: 0; }
-    .stat-col {
+    .rank {
+      width: 28px;
+      flex-shrink: 0;
+    }
+    .name-col {
       flex: 1;
-      min-width: 50px;
-      text-align: left;
+      min-width: 0;
+    }
+    /* Force stats to a new row below the name */
+    .stat-col {
+      text-align: center;
+      font-size: 12px;
+      padding-top: 12px;
     }
     .stat-col::before {
       display: block;
@@ -606,18 +613,26 @@ if (latestEp) {
       color: var(--text-muted);
       margin-bottom: 2px;
     }
-    .stat-col:nth-of-type(1)::before { content: "GAMES"; }
-    .stat-col:nth-of-type(2)::before { content: "WINS"; }
+    .fighter-row > :nth-child(3) { margin-left: 28px; width: 60px; }
+    .fighter-row > :nth-child(3)::before { content: "GAMES"; }
+    .fighter-row > :nth-child(4) { width: 60px; }
+    .fighter-row > :nth-child(4)::before { content: "WINS"; }
+    .stat-col-winrate { width: 60px; }
     .stat-col-winrate::before { content: "WIN%"; }
     .stat-col-best { display: none; }
   }
   @media (max-width: 640px) {
     .hero { padding: 80px 0 60px; }
     .hero-title { font-size: clamp(40px, 9vw, 60px); }
+    .hero-sub { font-size: 15px; }
     .hero-stats { gap: 32px; }
+    .hero-stat-val { font-size: 26px; }
     .hero-cta { font-size: 12px; padding: 12px 24px; }
-    .ep-content { padding: 28px; }
+    .ep-content { padding: 24px; }
+    .ep-title { font-size: 22px; }
+    .ep-visual { min-height: 140px; max-height: 180px; }
     .ep-actions { flex-direction: column; align-items: stretch; }
     .ep-actions .btn { text-align: center; justify-content: center; }
+    .section-title { font-size: 26px; }
   }
 </style>

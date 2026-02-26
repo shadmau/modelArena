@@ -48,6 +48,11 @@ const fullTitle = title.includes("ModelArena") ? title : `${title} | ModelArena`
           <img src="/logo.svg" alt="ModelArena" class="logo-icon" />
           <span class="logo-text">Model<em class="logo-accent">Arena</em></span>
         </a>
+        <button class="nav-toggle" aria-label="Toggle menu">
+          <span class="nav-toggle-bar"></span>
+          <span class="nav-toggle-bar"></span>
+          <span class="nav-toggle-bar"></span>
+        </button>
         <div class="nav-links">
           <a href="/">Rankings</a>
           <a href="/episodes">Episodes</a>
@@ -69,15 +74,23 @@ const fullTitle = title.includes("ModelArena") ? title : `${title} | ModelArena`
         <div class="footer-links">
           <a href="https://github.com/shadmau/modelArena" target="_blank">GitHub</a>
           <span class="footer-sep">/</span>
-          <a href="https://youtube.com/@modelarena" target="_blank">YouTube</a>
+          <a href="https://www.youtube.com/@ModelArenaTV" target="_blank">YouTube</a>
           <span class="footer-sep">/</span>
-          <a href="https://x.com/modelarena" target="_blank">X</a>
+          <a href="https://x.com/ModelArenaTV" target="_blank">X</a>
           <span class="footer-sep">/</span>
           <a href="/about">About</a>
         </div>
         <div class="footer-license">MIT Licensed</div>
       </div>
     </footer>
+    <script>
+      const toggle = document.querySelector('.nav-toggle');
+      const links = document.querySelector('.nav-links');
+      if (toggle && links) {
+        toggle.addEventListener('click', () => links.classList.toggle('open'));
+        links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => links.classList.remove('open')));
+      }
+    </script>
   </body>
 </html>
 
@@ -158,6 +171,22 @@ const fullTitle = title.includes("ModelArena") ? title : `${title} | ModelArena`
     font-size: 11px;
     opacity: 0.5;
   }
+  .nav-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .nav-toggle-bar {
+    display: block;
+    width: 20px;
+    height: 1.5px;
+    background: var(--text-muted);
+    transition: all 0.2s;
+  }
   main {
     min-height: 80vh;
   }
@@ -210,10 +239,39 @@ const fullTitle = title.includes("ModelArena") ? title : `${title} | ModelArena`
   @media (max-width: 640px) {
     .nav-inner {
       height: 56px;
+      position: relative;
+    }
+    .nav-toggle {
+      display: flex;
     }
     .nav-links {
-      gap: 12px;
-      font-size: 11px;
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: rgba(17, 13, 13, 0.97);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      flex-direction: column;
+      gap: 0;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .nav-links.open {
+      display: flex;
+    }
+    .nav-links a {
+      padding: 12px 32px;
+    }
+    .nav-links a::after {
+      display: none;
+    }
+  }
+  @media (max-width: 480px) {
+    .container {
+      padding: 0 16px;
     }
   }
 </style>

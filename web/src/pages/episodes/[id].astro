@@ -480,9 +480,34 @@ const ogDesc = game
     font-size: 16px;
   }
 
+  @media (max-width: 768px) {
+    .stats-bar {
+      font-size: 11px;
+      padding: 10px 16px;
+      gap: 8px;
+    }
+    .votes-grid {
+      gap: 6px;
+    }
+    .vote-chip {
+      padding: 6px 10px;
+      font-size: 12px;
+    }
+    .video-section {
+      max-width: 100%;
+    }
+  }
   @media (max-width: 640px) {
-    h1 { font-size: 28px; }
+    .ep-header { padding: 32px 0 28px; }
+    h1 { font-size: 26px; }
+    h2 { font-size: 20px; }
+    .ep-result { font-size: 13px; }
     .statement { padding: 12px 14px; }
+    .stmt-text { font-size: 13px; }
+    .elimination { padding: 12px 14px; font-size: 13px; gap: 10px; }
+    .round-label { flex-wrap: wrap; gap: 8px; }
+    .game-chips { gap: 6px; }
+    .game-chip { padding: 6px 10px; font-size: 11px; }
     .action-bar { flex-direction: column; }
     .action-bar .btn { text-align: center; justify-content: center; }
   }
