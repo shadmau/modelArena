@@ -21,6 +21,7 @@ interface EpisodeMeta {
 interface PlayerStandings {
   name: string;
   emoji: string;
+  icon?: string;
   color: string;
   title: string;
   winRate: number;
@@ -32,12 +33,13 @@ interface PlayerStandings {
 }
 
 // Character display config
-const CHARACTER_META: Record<string, { emoji: string; color: string; title: string }> = {
-  Claude: { emoji: "🧠", color: "#c8a960", title: "THE DIPLOMAT" },
-  GPT: { emoji: "⚡", color: "#6db880", title: "THE DECEIVER" },
-  Gemini: { emoji: "💎", color: "#6a9ec0", title: "THE DETECTIVE" },
-  DeepSeek: { emoji: "🔮", color: "#9a80c0", title: "THE WILDCARD" },
-  Llama: { emoji: "🦙", color: "#c07070", title: "THE SCAPEGOAT" },
+const CHARACTER_META: Record<string, { emoji: string; icon?: string; color: string; title: string }> = {
+  Claude: { emoji: "🧠", icon: "/icons/claude.svg", color: "#d4956b", title: "THE DIPLOMAT" },
+  GPT: { emoji: "⚡", icon: "/icons/openai.svg", color: "#5fba97", title: "THE DECEIVER" },
+  Gemini: { emoji: "💎", icon: "/icons/gemini.svg", color: "#7aafdb", title: "THE DETECTIVE" },
+  DeepSeek: { emoji: "🔮", icon: "/icons/deepseek.svg", color: "#8b7ec8", title: "THE WILDCARD" },
+  Llama: { emoji: "🦙", icon: "/icons/meta.svg", color: "#c07070", title: "THE SCAPEGOAT" },
+  Grok: { emoji: "⚔", icon: "/icons/grok.svg", color: "#d4d4d4", title: "THE CHALLENGER" },
 };
 
 /**
@@ -126,6 +128,7 @@ export function getPlayerStandings(): PlayerStandings[] {
     return {
       name,
       emoji: meta.emoji,
+      icon: meta.icon,
       color: meta.color,
       title: meta.title,
       winRate: Math.round(ps.win_rate || 0),
@@ -145,6 +148,7 @@ function getDefaultStandings(): PlayerStandings[] {
   return Object.entries(CHARACTER_META).map(([name, meta]) => ({
     name,
     emoji: meta.emoji,
+    icon: meta.icon,
     color: meta.color,
     title: meta.title,
     winRate: 0,

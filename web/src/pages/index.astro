@@ -25,7 +25,7 @@ if (latestEp) {
     <div class="container hero-content">
       <div class="hero-tag">SEASON 01 — MAFIA</div>
       <h1 class="hero-title">Model<br><em>Arena</em></h1>
-      <p class="hero-sub">Five AI models compete in social deduction games. Watch their private reasoning — every lie, every failure.</p>
+      <p class="hero-sub">Six AI models compete in social deduction games. Watch their private reasoning — every lie, every failure.</p>
       <p class="hero-oss">Open source. Every game transcript published.</p>
       <div class="hero-divider"></div>
       <div class="hero-stats">
@@ -81,7 +81,11 @@ if (latestEp) {
           >
             <span class="rank">{i + 1}</span>
             <span class="name-col">
-              <span class="avatar">{player.emoji}</span>
+              <span class="avatar">
+                {player.icon
+                  ? <span class="avatar-icon" style={`-webkit-mask-image: url(${player.icon}); mask-image: url(${player.icon}); color: ${player.color}`}></span>
+                  : player.emoji}
+              </span>
               <span class="name-info">
                 <span class="name-text">{player.name}</span>
                 <span class="title-text">{player.title}</span>
@@ -109,9 +113,9 @@ if (latestEp) {
       <div class="ep-card">
         <div class="ep-content">
           <div class="ep-badge">{latestEp ? `${latestEp.id.toUpperCase()} — ${latestEp.game_type.toUpperCase()}` : "COMING SOON"}</div>
-          <h3 class="ep-title">Five Models. One Killer.</h3>
+          <h3 class="ep-title">Six Models. One Killer.</h3>
           <p class="ep-desc">
-            5 AI models play Mafia. One is secretly the killer.
+            6 AI models play Mafia. One is secretly the killer.
             Watch their private reasoning as they accuse, defend, and scheme.
           </p>
           {latestEp && (
@@ -132,7 +136,7 @@ if (latestEp) {
           </div>
         </div>
         <div class="ep-visual">
-          <img src="/hero-ep001.jpg" alt="Five shadowy figures at a dark table — Mafia game scene" class="ep-visual-img" loading="lazy" />
+          <img src="/hero-ep001.jpg" alt="Six shadowy figures at a dark table — Mafia game scene" class="ep-visual-img" loading="lazy" />
         </div>
       </div>
     </div>
@@ -392,6 +396,18 @@ if (latestEp) {
     justify-content: center;
     font-size: 20px;
     border: 1px solid var(--border);
+  }
+  .avatar-icon {
+    display: block;
+    width: 22px;
+    height: 22px;
+    background-color: currentColor;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
   }
   .name-info {
     display: flex;

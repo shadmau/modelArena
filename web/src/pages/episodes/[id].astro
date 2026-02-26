@@ -24,9 +24,11 @@ const featuredGame = featuredGameId ? loadGame(id!, featuredGameId) : episode.ga
 
 const colors: Record<string, string> = {};
 const emojis: Record<string, string> = {};
+const icons: Record<string, string> = {};
 for (const [name, meta] of Object.entries(CHARACTER_META)) {
   colors[name] = meta.color;
   emojis[name] = meta.emoji;
+  if (meta.icon) icons[name] = meta.icon;
 }
 
 // Group statements by sub_round
@@ -51,8 +53,8 @@ const nextEp = currentIdx < allEpisodes.length - 1 ? allEpisodes[currentIdx + 1]
 
 // OG description
 const ogDesc = game
-  ? `${game.winner === 'town' ? 'Town' : 'Mafia'} wins — ${game.mafia_player} was the Mafia. Watch 5 AI models play social deduction.`
-  : `Episode ${epNum} of ModelArena. 5 AI models compete in social deduction games.`;
+  ? `${game.winner === 'town' ? 'Town' : 'Mafia'} wins — ${game.mafia_player} was the Mafia. Watch 6 AI models play social deduction.`
+  : `Episode ${epNum} of ModelArena. 6 AI models compete in social deduction games.`;
 ---
 
 <Layout
@@ -153,7 +155,9 @@ const ogDesc = game
                   return (
                     <div class={`statement ${isMafia ? 'statement-mafia' : ''}`} style={`--player-color: ${colors[stmt.player] || '#888'}`}>
                       <div class="stmt-header">
-                        <span class="stmt-avatar">{emojis[stmt.player] || '🤖'}</span>
+                        {icons[stmt.player]
+                          ? <span class="stmt-avatar-icon" style={`-webkit-mask-image: url(${icons[stmt.player]}); mask-image: url(${icons[stmt.player]}); color: ${colors[stmt.player] || '#888'}`}></span>
+                          : <span class="stmt-avatar">{emojis[stmt.player] || '🤖'}</span>}
                         <span class="stmt-name">{stmt.player}</span>
                         {isMafia && <span class="mafia-badge">MAFIA</span>}
                       </div>
@@ -376,6 +380,18 @@ const ogDesc = game
   .statement-mafia { border-left-color: var(--red); }
   .stmt-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
   .stmt-avatar { font-size: 18px; }
+  .stmt-avatar-icon {
+    display: block;
+    width: 20px;
+    height: 20px;
+    background-color: currentColor;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+  }
   .stmt-name { font-size: 14px; font-weight: 700; color: var(--player-color); }
   .mafia-badge {
     font-size: 9px;
