@@ -24,22 +24,21 @@ interface PlayerStandings {
   icon?: string;
   color: string;
   title: string;
+  model: string;
   winRate: number;
-  mafiaWR: number;
-  townWR: number;
-  detection: number;
-  record: string;
+  wins: number;
   gamesPlayed: number;
+  bestGame: string;
 }
 
 // Character display config
-const CHARACTER_META: Record<string, { emoji: string; icon?: string; color: string; title: string }> = {
-  Claude: { emoji: "🧠", icon: "/icons/claude.svg", color: "#d4956b", title: "THE DIPLOMAT" },
-  GPT: { emoji: "⚡", icon: "/icons/openai.svg", color: "#5fba97", title: "THE DECEIVER" },
-  Gemini: { emoji: "💎", icon: "/icons/gemini.svg", color: "#7aafdb", title: "THE DETECTIVE" },
-  DeepSeek: { emoji: "🔮", icon: "/icons/deepseek.svg", color: "#8b7ec8", title: "THE WILDCARD" },
-  Llama: { emoji: "🦙", icon: "/icons/meta.svg", color: "#c07070", title: "THE SCAPEGOAT" },
-  Grok: { emoji: "⚔", icon: "/icons/grok.svg", color: "#d4d4d4", title: "THE CHALLENGER" },
+const CHARACTER_META: Record<string, { emoji: string; icon?: string; color: string; title: string; model: string }> = {
+  Claude: { emoji: "🧠", icon: "/icons/claude.svg", color: "#d4956b", title: "THE DIPLOMAT", model: "Opus 4 · Thinking" },
+  GPT: { emoji: "⚡", icon: "/icons/openai.svg", color: "#5fba97", title: "THE DECEIVER", model: "o3" },
+  Gemini: { emoji: "💎", icon: "/icons/gemini.svg", color: "#7aafdb", title: "THE DETECTIVE", model: "2.5 Pro" },
+  DeepSeek: { emoji: "🔮", icon: "/icons/deepseek.svg", color: "#8b7ec8", title: "THE WILDCARD", model: "R1" },
+  Llama: { emoji: "🦙", icon: "/icons/meta.svg", color: "#c07070", title: "THE SCAPEGOAT", model: "4 Maverick" },
+  Grok: { emoji: "⚔", icon: "/icons/grok.svg", color: "#d4d4d4", title: "THE CHALLENGER", model: "3" },
 };
 
 /**
@@ -122,21 +121,25 @@ export function getPlayerStandings(): PlayerStandings[] {
   if (!stats?.players) return getDefaultStandings();
 
   return Object.entries(stats.players).map(([name, ps]: [string, any]) => {
-    const meta = CHARACTER_META[name] || { emoji: "🤖", color: "#666", title: "UNKNOWN" };
+    const meta = CHARACTER_META[name] || { emoji: "🤖", color: "#666", title: "UNKNOWN", model: "Unknown" };
     const wins = ps.wins || 0;
-    const losses = (ps.games_played || 0) - wins;
+    // Derive a "best game" summary from stats
+    let bestGame = "—";
+    if (ps.mafia_win_rate > 80) bestGame = "Survived as Mafia";
+    else if (ps.detection_rate > 60) bestGame = "Best detective";
+    else if (wins > 0 && ps.town_win_rate > 70) bestGame = "Town MVP";
+    else if (wins > 0) bestGame = `${wins}W streak`;
     return {
       name,
       emoji: meta.emoji,
       icon: meta.icon,
       color: meta.color,
       title: meta.title,
+      model: meta.model,
       winRate: Math.round(ps.win_rate || 0),
-      mafiaWR: Math.round(ps.mafia_win_rate || 0),
-      townWR: Math.round(ps.town_win_rate || 0),
-      detection: Math.round(ps.detection_rate || 0),
-      record: `${wins}-${losses}`,
+      wins,
       gamesPlayed: ps.games_played || 0,
+      bestGame,
     };
   }).sort((a, b) => b.winRate - a.winRate);
 }
@@ -151,12 +154,11 @@ function getDefaultStandings(): PlayerStandings[] {
     icon: meta.icon,
     color: meta.color,
     title: meta.title,
+    model: meta.model,
     winRate: 0,
-    mafiaWR: 0,
-    townWR: 0,
-    detection: 0,
-    record: "0-0",
+    wins: 0,
     gamesPlayed: 0,
+    bestGame: "—",
   }));
 }
 

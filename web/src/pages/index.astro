@@ -4,7 +4,8 @@ import { getPlayerStandings, listEpisodes, loadEpisode, listGames, loadGame, CHA
 
 const sorted = getPlayerStandings();
 const episodes = listEpisodes();
-const totalGames = sorted.length > 0 ? sorted[0].gamesPlayed : 0;
+const modelCount = Object.keys(CHARACTER_META).length;
+const totalGames = episodes.reduce((sum, ep) => sum + listGames(ep.id).length, 0);
 
 // Latest episode info
 const latestEp = episodes.length > 0 ? episodes[episodes.length - 1] : null;
@@ -30,12 +31,12 @@ if (latestEp) {
       <div class="hero-divider"></div>
       <div class="hero-stats">
         <div class="hero-stat">
-          <span class="hero-stat-val">{sorted.length}</span>
+          <span class="hero-stat-val">{modelCount}</span>
           <span class="hero-stat-label">MODELS</span>
         </div>
         <div class="hero-stat">
           <span class="hero-stat-val">{totalGames || "—"}</span>
-          <span class="hero-stat-label">GAMES</span>
+          <span class="hero-stat-label">{totalGames === 1 ? "GAME" : "GAMES"}</span>
         </div>
         <div class="hero-stat">
           <span class="hero-stat-val">{episodes.length || "—"}</span>
@@ -62,16 +63,10 @@ if (latestEp) {
         <div class="table-header">
           <span>#</span>
           <span>FIGHTER</span>
-          <span style="text-align:center">RECORD</span>
+          <span style="text-align:center">GAMES</span>
+          <span style="text-align:center">WINS</span>
           <span style="text-align:center">WIN%</span>
-          <span style="text-align:center" class="col-has-tip">MAFIA <span class="col-tip">Win rate as Mafia</span></span>
-          <span style="text-align:center">TOWN</span>
-          <span style="text-align:center" class="col-has-tip">DETECT <span class="col-tip">Detection rate of Mafia</span></span>
-        </div>
-        <div class="rankings-legend">
-          <span>MAFIA = win rate as Mafia</span>
-          <span class="legend-sep">|</span>
-          <span>DETECT = detection rate of Mafia players</span>
+          <span style="text-align:center">BEST GAME</span>
         </div>
 
         {sorted.map((player, i) => (
@@ -88,14 +83,13 @@ if (latestEp) {
               </span>
               <span class="name-info">
                 <span class="name-text">{player.name}</span>
-                <span class="title-text">{player.title}</span>
+                <span class="model-text">{player.model}</span>
               </span>
             </span>
-            <span class="record-col">{player.record}</span>
-            <span class="stat-col" style={player.winRate > 0 ? `color: var(--green)` : `color: var(--text-muted)`}>{player.winRate}%</span>
-            <span class="stat-col stat-col-mafia" style={player.mafiaWR > 0 ? `color: var(--red)` : `color: var(--text-muted)`}>{player.mafiaWR}%</span>
-            <span class="stat-col stat-col-town" style={player.townWR > 0 ? `color: var(--green)` : `color: var(--text-muted)`}>{player.townWR}%</span>
-            <span class="stat-col stat-col-detect" style={player.detection > 0 ? `color: var(--blue)` : `color: var(--text-muted)`}>{player.detection}%</span>
+            <span class="stat-col">{player.gamesPlayed}</span>
+            <span class="stat-col">{player.wins}</span>
+            <span class="stat-col stat-col-winrate" style={player.winRate > 0 ? `color: var(--green)` : `color: var(--text-muted)`}>{player.winRate}%</span>
+            <span class="stat-col stat-col-best">{player.bestGame}</span>
           </div>
         ))}
       </div>
@@ -339,7 +333,7 @@ if (latestEp) {
   }
   .table-header {
     display: grid;
-    grid-template-columns: 50px 1fr 90px repeat(4, 80px);
+    grid-template-columns: 50px 1fr repeat(4, 90px);
     padding: 14px 24px;
     font-size: 10px;
     font-weight: 600;
@@ -351,7 +345,7 @@ if (latestEp) {
   }
   .fighter-row {
     display: grid;
-    grid-template-columns: 50px 1fr 90px repeat(4, 80px);
+    grid-template-columns: 50px 1fr repeat(4, 90px);
     padding: 20px 24px;
     align-items: center;
     border-bottom: 1px solid var(--border);
@@ -419,17 +413,11 @@ if (latestEp) {
     font-weight: 600;
     color: var(--player-color, var(--cream));
   }
-  .title-text {
+  .model-text {
     font-size: 10px;
-    letter-spacing: 2px;
-    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    color: var(--text-secondary);
     font-family: "JetBrains Mono", monospace;
-  }
-  .record-col {
-    font-family: "JetBrains Mono", monospace;
-    font-size: 15px;
-    font-weight: 700;
-    text-align: center;
   }
   .stat-col {
     font-family: "JetBrains Mono", monospace;
@@ -437,6 +425,12 @@ if (latestEp) {
     font-weight: 600;
     text-align: center;
     color: var(--text-secondary);
+  }
+  .stat-col-best {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    color: var(--text-muted);
   }
 
   /* ═══ LATEST EPISODE ═══ */
@@ -559,55 +553,16 @@ if (latestEp) {
     object-fit: cover;
   }
 
-  /* Column tooltips */
-  .col-has-tip {
-    position: relative;
-    cursor: help;
-  }
-  .col-tip {
-    display: none;
-    position: absolute;
-    top: calc(100% + 6px);
-    left: 50%;
-    transform: translateX(-50%);
-    white-space: nowrap;
-    font-size: 10px;
-    font-weight: 400;
-    letter-spacing: 0.5px;
-    color: var(--text-secondary);
-    background: var(--bg-card);
-    border: 1px solid var(--border-strong);
-    padding: 4px 10px;
-    z-index: 10;
-  }
-  .col-has-tip:hover .col-tip {
-    display: block;
-  }
-
-  /* Rankings legend */
-  .rankings-legend {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    padding: 8px 24px;
-    font-size: 10px;
-    color: var(--text-muted);
-    letter-spacing: 0.5px;
-    border-bottom: 1px solid var(--border);
-    background: rgba(200, 169, 96, 0.01);
-    font-family: "JetBrains Mono", monospace;
-  }
-  .legend-sep {
-    color: var(--border-strong);
-  }
 
   /* ═══ RESPONSIVE ═══ */
   @media (max-width: 900px) {
     .table-header,
     .fighter-row {
-      grid-template-columns: 40px 1fr 80px repeat(4, 65px);
+      grid-template-columns: 40px 1fr repeat(3, 70px);
       padding: 14px 16px;
     }
+    .stat-col-best,
+    .table-header span:last-child { display: none; }
     .ep-card {
       grid-template-columns: 1fr;
     }
@@ -638,10 +593,9 @@ if (latestEp) {
     }
     .rank { width: 32px; }
     .name-col { flex: 1; min-width: 0; }
-    .record-col { width: 100%; text-align: left; margin-top: 4px; }
     .stat-col {
       flex: 1;
-      min-width: 60px;
+      min-width: 50px;
       text-align: left;
     }
     .stat-col::before {
@@ -652,10 +606,10 @@ if (latestEp) {
       color: var(--text-muted);
       margin-bottom: 2px;
     }
-    .stat-col:nth-of-type(1)::before { content: "WIN%"; }
-    .stat-col-mafia::before { content: "MAFIA"; }
-    .stat-col-town::before { content: "TOWN"; }
-    .stat-col-detect::before { content: "DETECT"; }
+    .stat-col:nth-of-type(1)::before { content: "GAMES"; }
+    .stat-col:nth-of-type(2)::before { content: "WINS"; }
+    .stat-col-winrate::before { content: "WIN%"; }
+    .stat-col-best { display: none; }
   }
   @media (max-width: 640px) {
     .hero { padding: 80px 0 60px; }
