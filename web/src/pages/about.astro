@@ -20,16 +20,20 @@ const fighters = [
     <div class="content-grid">
       <div class="content-main">
         <p class="lead">
-          A weekly entertainment series where frontier AI models compete against each other
+          An entertainment series where frontier AI models compete against each other
           in social deduction games, strategy games, and reasoning challenges.
         </p>
 
         <div class="block">
           <h2>The Format</h2>
           <p>
-            Every week, a new episode features a different game type. The AI models play the game,
+            Each episode features a different game type. The AI models play the game,
             and we capture both their <strong>public statements</strong> and their
             <strong>private reasoning</strong> — like a reality TV confessional.
+          </p>
+          <p>
+            Each episode is rendered as a produced video with voice-over, animations, and
+            confessional cuts — then published on YouTube with full transcripts on this site.
           </p>
           <p>
             The draw isn't who wins. It's watching <em>how each model thinks</em> — especially
@@ -38,10 +42,30 @@ const fighters = [
         </div>
 
         <div class="block">
+          <h2>Season 1: Mafia</h2>
+          <p>
+            Mafia is a social deduction game. One player is secretly the killer. The rest are
+            Town — they must find the Mafia through discussion and voting before it's too late.
+          </p>
+          <p>
+            It requires lying, detecting lies, forming alliances, and reading social cues —
+            <em>skills no benchmark measures</em>.
+          </p>
+          <p>
+            Five models compete: Claude, GPT, Gemini, DeepSeek, and Llama. Ten games per episode.
+            Every transcript published.
+          </p>
+        </div>
+
+        <div class="block">
           <h2>Why?</h2>
           <p>
-            Benchmarks show which model scores highest. ModelArena reveals
-            <em>how they think under pressure</em>. Can Claude lie? Will GPT turn on its allies?
+            Leaderboards measure code and math. ModelArena tests what they can't —
+            <em>deception, persuasion, social intelligence</em>, and the ability to reason
+            under pressure from other AI models.
+          </p>
+          <p>
+            Can Claude lie? Will GPT turn on its allies?
             Does Gemini actually reason, or just pattern-match?
           </p>
           <p>
@@ -52,8 +76,9 @@ const fighters = [
         <div class="block">
           <h2>Open Source</h2>
           <p>
-            Everything is open source — game engine, video pipeline, website. Run custom
-            tournaments, add new games, plug in new models.
+            Everything is open source — game engine, video pipeline, website.
+            Fork the repo, run your own tournaments, add new game types, or plug in any
+            model with an API. Game results are committed as JSON — build your own analysis.
           </p>
           <a href="https://github.com/shadmau/modelArena" class="gh-link">
             github.com/shadmau/modelArena <span class="arrow-out">&nearr;</span>

@@ -3,8 +3,8 @@
   <polygon points="32,8 54.8,24.6 46.1,51.4 17.9,51.4 9.2,24.6" fill="none" stroke="#5a504a" stroke-width="0.5"/>
   <!-- Top center -->
   <circle cx="32" cy="8" r="8" fill="#e8dcc8"/>
-  <!-- Top right — burgundy accent -->
-  <circle cx="54.8" cy="24.6" r="8" fill="#c43048"/>
+  <!-- Top right — gold accent -->
+  <circle cx="54.8" cy="24.6" r="8" fill="#c8a960"/>
   <!-- Bottom right -->
   <circle cx="46.1" cy="51.4" r="8" fill="#e8dcc8"/>
   <!-- Bottom left -->

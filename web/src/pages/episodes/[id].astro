@@ -42,9 +42,23 @@ function groupBySubRound(statements: any[]) {
 
 const game = featuredGame;
 const epNum = id!.replace("ep", "").replace(/^0+/, "") || "1";
+
+// Prev/next episode navigation
+const allEpisodes = listEpisodes();
+const currentIdx = allEpisodes.findIndex(ep => ep.id === id);
+const prevEp = currentIdx > 0 ? allEpisodes[currentIdx - 1] : null;
+const nextEp = currentIdx < allEpisodes.length - 1 ? allEpisodes[currentIdx + 1] : null;
+
+// OG description
+const ogDesc = game
+  ? `${game.winner === 'town' ? 'Town' : 'Mafia'} wins — ${game.mafia_player} was the Mafia. Watch 5 AI models play social deduction.`
+  : `Episode ${epNum} of ModelArena. 5 AI models compete in social deduction games.`;
 ---
 
-<Layout title={`Episode ${epNum} — ${episode.episode_title}`}>
+<Layout
+  title={`ModelArena Ep.${epNum} — ${episode.episode_title}`}
+  description={ogDesc}
+>
   <div class="container">
     <div class="ep-header">
       <a href="/episodes" class="back-link">&larr; Episodes</a>
@@ -62,7 +76,7 @@ const epNum = id!.replace("ep", "").replace(/^0+/, "") || "1";
       )}
     </div>
 
-    {/* Video embed placeholder */}
+    {/* Video embed */}
     <div class="video-section">
       <div class="video-frame">
         <span class="play-icon">&#9654;</span>
@@ -111,12 +125,13 @@ const epNum = id!.replace("ep", "").replace(/^0+/, "") || "1";
       </div>
     )}
 
-    {/* Featured game log */}
+    {/* Featured game transcript */}
     {game && (
       <>
         <div class="log-header" id="transcript">
           <div class="section-tag">FEATURED GAME</div>
-          <h2>Game Log — {game.game_id}</h2>
+          <h2>Game Transcript</h2>
+          <div class="game-id-label">{game.game_id}</div>
         </div>
 
         {game.rounds.map((round: any) => (
@@ -184,6 +199,24 @@ const epNum = id!.replace("ep", "").replace(/^0+/, "") || "1";
         ))}
       </>
     )}
+
+    {/* Prev / Next navigation */}
+    {(prevEp || nextEp) && (
+      <div class="ep-nav">
+        {prevEp ? (
+          <a href={`/episodes/${prevEp.id}`} class="ep-nav-link ep-nav-prev">
+            <span class="ep-nav-arrow">&larr;</span>
+            <span class="ep-nav-label">Previous Episode</span>
+          </a>
+        ) : <span />}
+        {nextEp ? (
+          <a href={`/episodes/${nextEp.id}`} class="ep-nav-link ep-nav-next">
+            <span class="ep-nav-label">Next Episode</span>
+            <span class="ep-nav-arrow">&rarr;</span>
+          </a>
+        ) : <span />}
+      </div>
+    )}
   </div>
 </Layout>
 
@@ -246,7 +279,7 @@ const epNum = id!.replace("ep", "").replace(/^0+/, "") || "1";
     border: 1px solid var(--border);
     font-size: 13px;
     color: var(--text-secondary);
-    margin-bottom: 32px;
+    margin-bottom: 16px;
     flex-wrap: wrap;
     font-family: "JetBrains Mono", monospace;
   }
@@ -276,7 +309,7 @@ const epNum = id!.replace("ep", "").replace(/^0+/, "") || "1";
   .gc-id { font-weight: 700; color: var(--cream); }
   .gc-meta { color: var(--text-muted); }
 
-  .log-header { margin-bottom: 32px; }
+  .log-header { margin-bottom: 16px; }
   .section-tag {
     font-size: 10px;
     font-weight: 600;
@@ -289,6 +322,13 @@ const epNum = id!.replace("ep", "").replace(/^0+/, "") || "1";
     font-family: "DM Serif Display", serif;
     font-size: 24px;
     color: var(--cream);
+  }
+  .game-id-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: "JetBrains Mono", monospace;
+    letter-spacing: 1px;
+    margin-top: 4px;
   }
 
   .round { margin-bottom: 48px; }
@@ -399,8 +439,35 @@ const epNum = id!.replace("ep", "").replace(/^0+/, "") || "1";
   .elim-mafia .elim-icon { color: var(--green); }
   .elim-town .elim-icon { color: var(--red); }
 
+  /* Episode navigation */
+  .ep-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 48px;
+    margin-top: 48px;
+    border-top: 1px solid var(--border);
+  }
+  .ep-nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    transition: color 0.2s;
+  }
+  .ep-nav-link:hover {
+    color: var(--gold);
+  }
+  .ep-nav-arrow {
+    font-size: 16px;
+  }
+
   @media (max-width: 640px) {
     h1 { font-size: 28px; }
     .statement { padding: 12px 14px; }
+    .action-bar { flex-direction: column; }
+    .action-bar .btn { text-align: center; justify-content: center; }
   }
 </style>

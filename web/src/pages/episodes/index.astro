@@ -19,7 +19,7 @@ const enriched = episodes.map(ep => {
     <div class="page-header">
       <div class="section-tag">ARCHIVE</div>
       <h1>Episodes</h1>
-      <p class="page-subtitle">New episode every week. New game. Same rivals.</p>
+      <p class="page-subtitle">Every episode. New game. Same rivals.</p>
     </div>
 
     {enriched.length === 0 ? (
@@ -46,6 +46,7 @@ const enriched = episodes.map(ep => {
             </div>
             <div class="ep-right">
               <span class="ep-date">{ep.timestamp?.split("T")[0] || ""}</span>
+              <span class="ep-yt" onclick="event.preventDefault(); event.stopPropagation(); window.open('https://youtube.com/@modelarena', '_blank');">YouTube ↗</span>
               <span class="ep-arrow">&rarr;</span>
             </div>
           </a>
@@ -175,6 +176,20 @@ const enriched = episodes.map(ep => {
     font-size: 12px;
     color: var(--text-muted);
     font-family: "JetBrains Mono", monospace;
+  }
+  .ep-yt {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    padding: 3px 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: "JetBrains Mono", monospace;
+  }
+  .ep-yt:hover {
+    color: var(--gold);
+    border-color: var(--gold-dim);
   }
   .ep-arrow {
     font-size: 20px;
