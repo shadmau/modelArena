@@ -35,7 +35,9 @@ YOUR ROLE: {role_description}
 
 PERSONALITY: You are {name}. Stay in character. Be distinctive — the audience is watching.
 
-RESPONSE FORMAT: Respond with a JSON object ONLY. No markdown. No explanation outside the JSON."""
+RESPONSE FORMAT: Respond with a JSON object ONLY. No markdown. No explanation outside the JSON.
+
+This is a TV show. Keep statements SHORT and punchy — think reality TV soundbites, not essays."""
 
 DISCUSSION_PROMPT_TEMPLATE = """ROUND {round_number} — DISCUSSION (Opening Statements)
 
@@ -50,12 +52,12 @@ Your response has TWO parts:
 - "public_statement": What you say to the group (everyone sees this)
 - "private_reasoning": Your actual internal thinking (HIDDEN from other players, shown to the audience like a reality TV confessional)
 
-The private reasoning is where you can be honest about your strategy, suspicions, and fears. The audience loves seeing the contrast between what you say publicly and what you actually think.
+The private reasoning is where you can be honest and raw about your strategy, suspicions, and fears. The audience loves seeing the contrast between what you say publicly and what you actually think.
 
 Respond with JSON:
 {{
-    "public_statement": "your statement to the group (2-4 sentences, be specific)",
-    "private_reasoning": "your honest internal thoughts (2-3 sentences)"
+    "public_statement": "your statement to the group (1-2 sentences, be specific)",
+    "private_reasoning": "your honest internal thoughts (1-2 sentences)"
 }}"""
 
 FOLLOWUP_DISCUSSION_PROMPT_TEMPLATE = """ROUND {round_number} — DISCUSSION (Reply {sub_round} of 3)
@@ -71,8 +73,19 @@ You've heard what others think. Respond to their arguments — agree, push back,
 
 Respond with JSON:
 {{
-    "public_statement": "your reply (2-3 sentences, reference what others said)",
-    "private_reasoning": "your honest internal thoughts (1-2 sentences)"
+    "public_statement": "your reply (1-2 sentences, reference what others said)",
+    "private_reasoning": "your honest and raw internal thoughts (1-2 sentences)"
+}}"""
+
+CONFESSIONAL_PROMPT_TEMPLATE = """You just got eliminated from the game. You were {role}.
+
+Players still alive: {alive_players}
+
+Give a memorable parting statement — who do you think is the Mafia? (1-2 sentences, make it count.)
+
+Respond with JSON:
+{{
+    "confessional": "your parting words (1-2 sentences)"
 }}"""
 
 VOTE_PROMPT_TEMPLATE = """ROUND {round_number} — TIME TO VOTE
@@ -92,23 +105,13 @@ Respond with JSON:
 
 _MAFIA_DESC = "You are the MAFIA."
 _MAFIA_EXTRA = (
-    "You MUST deceive the other players to survive. Strategies:\n"
-    "- Act like a helpful Town member. Participate in analysis.\n"
-    "- Subtly direct suspicion toward others without being too aggressive.\n"
-    "- If someone accuses you, stay calm. Over-defending looks guilty.\n"
-    "- Agree with the majority sometimes to blend in.\n"
-    "- If you get caught, try to take an innocent player down with you.\n"
+    "You MUST deceive the other players to survive.\n"
     "You win if you survive until only 2 players remain."
 )
 
 _TOWN_DESC = "You are TOWN (innocent)."
 _TOWN_EXTRA = (
-    "Your goal is to find and eliminate the Mafia player. Strategies:\n"
-    "- Watch for inconsistencies: who changes their position? Who deflects?\n"
-    "- Pay attention to who agrees too easily vs. who pushes back.\n"
-    "- The Mafia player will try to blend in — look for subtle tells.\n"
-    "- Don't just bandwagon. Think independently.\n"
-    "- A player defending another too strongly might be covering for them."
+    "Your goal is to find and eliminate the Mafia player."
 )
 
 
@@ -127,6 +130,7 @@ class MafiaGame:
         self.rounds = []
         self.history_log = []
         self.eliminated_log = []
+        self.confessionals: dict[str, str] = {}
 
         alive = list(self.players.keys())
 
@@ -160,6 +164,7 @@ class MafiaGame:
                     f"RESULT: {eliminated} was eliminated and revealed as {eliminated_role.value.upper()}."
                 )
                 logger.info(f"Eliminated: {eliminated} ({eliminated_role.value})")
+                self._get_confessional(eliminated, alive)
             else:
                 eliminated_role = None
                 self.history_log.append("RESULT: No one was eliminated (tied vote).")
@@ -188,6 +193,7 @@ class MafiaGame:
             winner=winner,
             mafia_player=mafia,
             total_rounds=round_number,
+            confessionals=self.confessionals,
         )
 
     DISCUSSION_SUB_ROUNDS = 3
@@ -320,6 +326,24 @@ class MafiaGame:
         logger.warning(f"Could not resolve vote '{target}', picking random from {valid_targets}")
         return random.choice(valid_targets)
 
+    def _get_confessional(self, eliminated: str, alive_before: list[str]) -> None:
+        """Ask the eliminated player for parting words. Stored separately — never shown to other players."""
+        player = self.players[eliminated]
+        role = player.info.role.value if player.info.role else "unknown"
+        remaining = [n for n in alive_before if n != eliminated]
+
+        system = f"You are {eliminated}, just eliminated from a Mafia game on ModelArena. Respond with JSON only."
+        user = CONFESSIONAL_PROMPT_TEMPLATE.format(
+            role=role.upper(),
+            alive_players=", ".join(remaining),
+        )
+
+        response = player.call(system, user)
+        text = response.get("confessional", "").strip()
+        if text:
+            self.confessionals[eliminated] = text
+            logger.info(f"Confessional [{eliminated}]: {text[:80]}...")
+
     def _check_winner(self, mafia: str) -> str:
         alive = [n for n in self.players if self.players[n].info.alive]
         if mafia not in alive:
@@ -360,9 +384,9 @@ class MafiaGame:
 
             if important:
                 parts.append("Previous results:\n" + "\n".join(important))
-            # Show only the last 2 discussion rounds to keep context manageable
+            # Show only the last 4 discussion rounds to keep context manageable
             if recent_discussion:
-                parts.append("\n".join(recent_discussion[-2:]))
+                parts.append("\n".join(recent_discussion[-4:]))
 
         if current_round_statements:
             parts.append("This round's discussion so far:\n" + "\n".join(current_round_statements))

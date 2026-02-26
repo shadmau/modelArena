@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 DEFAULT_MODELS = {
     "Claude": "anthropic/claude-sonnet-4-20250514",
     "GPT": "openai/gpt-4o",
-    "Gemini": "gemini/gemini-2.0-flash",
+    "Gemini": "gemini/gemini-2.5-pro",
     "DeepSeek": "deepseek/deepseek-chat",
     "Llama": "groq/llama-3.3-70b-versatile",
     "Grok": "xai/grok-3",

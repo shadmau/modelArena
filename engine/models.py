@@ -54,6 +54,7 @@ class GameResult(BaseModel):
     winner: str = ""  # "mafia" or "town"
     mafia_player: str = ""
     total_rounds: int = 0
+    confessionals: dict[str, str] = Field(default_factory=dict)
     metadata: dict[str, Any] = Field(default_factory=dict)
 
 

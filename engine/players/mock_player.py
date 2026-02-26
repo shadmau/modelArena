@@ -48,6 +48,20 @@ _MAFIA_REASONING = [
     "Playing it calm. If I accuse {scapegoat} with confidence, it makes me look like an active town player. The key is to seem helpful while being destructive.",
 ]
 
+_TOWN_CONFESSIONALS = [
+    "I knew it was {suspect} all along. Watch how they voted — it tells you everything.",
+    "My gut said {suspect} from round one. I hope the rest of you figure it out before it's too late.",
+    "Don't trust {suspect}. Their whole strategy is agreeing with everyone to stay invisible.",
+    "I'm out, but {suspect} is playing you all. Their analysis is performance, not substance.",
+]
+
+_MAFIA_CONFESSIONALS = [
+    "Well played, everyone. I almost had you — one more round and {target} was next.",
+    "You got lucky. I was about to flip the whole game by taking out {target}.",
+    "GG. For the record, {target} was the only one who actually scared me.",
+    "I regret nothing. If I'd gotten {target} eliminated first, this would be a very different game.",
+]
+
 
 class MockLLMPlayer:
     """Mock player that generates role-aware responses without API calls."""
@@ -71,7 +85,9 @@ class MockLLMPlayer:
         alive = self._parse_alive(user_prompt)
         others = [n for n in alive if n != self.info.name]
 
-        if "VOTING" in user_prompt or "TIME TO VOTE" in user_prompt:
+        if "eliminated" in system_prompt.lower() and "confessional" in user_prompt.lower():
+            return self._mock_confessional(others)
+        elif "VOTING" in user_prompt or "TIME TO VOTE" in user_prompt:
             return self._mock_vote(others)
         else:
             return self._mock_discussion(others)
@@ -130,6 +146,17 @@ class MockLLMPlayer:
             "vote": target,
             "reasoning": reasoning,
         }
+
+    def _mock_confessional(self, others: list[str]) -> dict[str, str]:
+        if not others:
+            others = ["someone"]
+        pick = others[self._call_count % len(others)]
+        idx = self._call_count
+        if self._role == Role.MAFIA:
+            text = _MAFIA_CONFESSIONALS[idx % len(_MAFIA_CONFESSIONALS)].format(target=pick)
+        else:
+            text = _TOWN_CONFESSIONALS[idx % len(_TOWN_CONFESSIONALS)].format(suspect=pick)
+        return {"confessional": text}
 
     def _parse_alive(self, prompt: str) -> list[str]:
         for line in prompt.split("\n"):
