@@ -2,6 +2,7 @@ import React from "react";
 import { AbsoluteFill, interpolate, useCurrentFrame, spring, useVideoConfig } from "remotion";
 import { Vote, PlayerInfo, CHARACTERS } from "../types/game";
 import { Avatar } from "../components/Avatar";
+import { DISPLAY_FONT, MONO_FONT, ensureFontsLoaded } from "../fonts";
 
 interface VotingSceneProps {
   votes: Vote[];
@@ -9,16 +10,10 @@ interface VotingSceneProps {
   roundNumber: number;
 }
 
-// Grid positions for 5 players during voting (1920x1080)
-const VOTE_POSITIONS = [
-  { x: 200, y: 300 },
-  { x: 560, y: 300 },
-  { x: 960, y: 300 },
-  { x: 1360, y: 300 },
-  { x: 1720, y: 300 },
-];
+const VOTE_STAGGER = 15;
 
 export const VotingScene: React.FC<VotingSceneProps> = ({ votes, players, roundNumber }) => {
+  ensureFontsLoaded();
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
@@ -28,17 +23,24 @@ export const VotingScene: React.FC<VotingSceneProps> = ({ votes, players, roundN
     return { x: 200 + spacing * (i + 1), y: 280 };
   });
 
-  // Count votes per target
-  const voteCounts: Record<string, number> = {};
-  votes.forEach((v) => {
-    voteCounts[v.target] = (voteCounts[v.target] || 0) + 1;
+  // Progressive vote counts — only count votes that have visually appeared
+  const progressiveCounts: Record<string, number> = {};
+  votes.forEach((v, i) => {
+    const voteAppear = spring({
+      frame: frame - i * VOTE_STAGGER,
+      fps,
+      config: { damping: 12 },
+    });
+    if (voteAppear > 0.5) {
+      progressiveCounts[v.target] = (progressiveCounts[v.target] || 0) + 1;
+    }
   });
 
   return (
     <AbsoluteFill
       style={{
         background: "linear-gradient(180deg, #0a0a1a 0%, #1a1025 100%)",
-        fontFamily: "monospace",
+        fontFamily: DISPLAY_FONT,
       }}
     >
       {/* Header */}
@@ -66,12 +68,11 @@ export const VotingScene: React.FC<VotingSceneProps> = ({ votes, players, roundN
           accentColor: "#999",
           emoji: "🤖",
         };
-        const count = voteCounts[name] || 0;
+        const count = progressiveCounts[name] || 0;
 
         return (
           <React.Fragment key={name}>
             <Avatar character={char} x={pos.x} y={pos.y} size={100} />
-            {/* Vote count */}
             {count > 0 && (
               <div
                 style={{
@@ -88,6 +89,7 @@ export const VotingScene: React.FC<VotingSceneProps> = ({ votes, players, roundN
                   justifyContent: "center",
                   fontSize: 20,
                   fontWeight: 700,
+                  fontFamily: MONO_FONT,
                 }}
               >
                 {count}
@@ -111,7 +113,7 @@ export const VotingScene: React.FC<VotingSceneProps> = ({ votes, players, roundN
       >
         {votes.map((vote, i) => {
           const appear = spring({
-            frame: frame - i * 10,
+            frame: frame - i * VOTE_STAGGER,
             fps,
             config: { damping: 12 },
           });

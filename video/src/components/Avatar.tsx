@@ -1,6 +1,7 @@
 import React from "react";
 import { interpolate, useCurrentFrame } from "remotion";
 import { CharacterConfig } from "../types/game";
+import { DISPLAY_FONT } from "../fonts";
 
 interface AvatarProps {
   character: CharacterConfig;
@@ -65,7 +66,7 @@ export const Avatar: React.FC<AvatarProps> = ({
           color: active ? "#fff" : "#ccc",
           fontSize: 18,
           fontWeight: active ? 700 : 500,
-          fontFamily: "monospace",
+          fontFamily: DISPLAY_FONT,
           textShadow: "0 2px 4px rgba(0,0,0,0.8)",
         }}
       >
@@ -80,7 +81,7 @@ export const Avatar: React.FC<AvatarProps> = ({
             borderRadius: 20,
             fontSize: 14,
             fontWeight: 700,
-            fontFamily: "monospace",
+            fontFamily: DISPLAY_FONT,
             color: "#fff",
             background: showRole === "mafia" ? "#DC2626" : "#059669",
           }}

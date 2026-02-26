@@ -1,12 +1,14 @@
 import React from "react";
 import { AbsoluteFill, interpolate, useCurrentFrame, spring, useVideoConfig } from "remotion";
 import { CHARACTERS, EpisodeStats } from "../types/game";
+import { DISPLAY_FONT, MONO_FONT, ensureFontsLoaded } from "../fonts";
 
 interface StatsSceneProps {
   stats: EpisodeStats;
 }
 
 export const StatsScene: React.FC<StatsSceneProps> = ({ stats }) => {
+  ensureFontsLoaded();
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
@@ -21,7 +23,7 @@ export const StatsScene: React.FC<StatsSceneProps> = ({ stats }) => {
     <AbsoluteFill
       style={{
         background: "linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 100%)",
-        fontFamily: "monospace",
+        fontFamily: DISPLAY_FONT,
         padding: 60,
       }}
     >
@@ -81,7 +83,7 @@ export const StatsScene: React.FC<StatsSceneProps> = ({ stats }) => {
             </div>
 
             {/* Stats */}
-            <div style={{ display: "flex", gap: 32, fontSize: 18 }}>
+            <div style={{ display: "flex", gap: 32, fontSize: 18, fontFamily: MONO_FONT }}>
               <div>
                 <span style={{ color: "#888" }}>WR </span>
                 <span style={{ color: "#fff", fontWeight: 700 }}>{ps.win_rate}%</span>

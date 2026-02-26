@@ -1,13 +1,16 @@
 import React from "react";
 import { Sequence } from "remotion";
 import { GameResult, EpisodeStats } from "./types/game";
+import { TypingSpeed } from "./components/SpeechBubble";
 import { IntroScene } from "./scenes/IntroScene";
-import { TableScene } from "./scenes/TableScene";
+import { TableScene, CameraMode } from "./scenes/TableScene";
 import { ConfessionalScene } from "./scenes/ConfessionalScene";
 import { VotingScene } from "./scenes/VotingScene";
 import { EliminationScene } from "./scenes/EliminationScene";
 import { StatsScene } from "./scenes/StatsScene";
 import { OutroScene } from "./scenes/OutroScene";
+import { RoundTitleScene } from "./scenes/RoundTitleScene";
+import { GlitchTransition } from "./components/GlitchTransition";
 
 interface EpisodeProps {
   game: GameResult;
@@ -19,10 +22,12 @@ interface EpisodeProps {
 const INTRO_DURATION = 120; // 4s
 const STATEMENT_DURATION = 150; // 5s per statement
 const CONFESSIONAL_DURATION = 120; // 4s per confessional
-const VOTING_DURATION = 120; // 4s
+const VOTING_DURATION = 150; // 5s (fits 6-player staggered reveals)
 const ELIMINATION_DURATION = 120; // 4s
 const STATS_DURATION = 180; // 6s
 const OUTRO_DURATION = 150; // 5s
+const ROUND_TITLE_DURATION = 45; // 1.5s title card
+const GLITCH_DURATION = 3; // 0.1s glitch transition
 
 /**
  * Determine which statements get a confessional cut.
@@ -68,8 +73,29 @@ export const Episode: React.FC<EpisodeProps> = ({ game, stats, episodeNumber }) 
   );
   currentFrame += INTRO_DURATION;
 
+  // Track eliminations to show correct alive count in title cards
+  const eliminatedSet = new Set<string>();
+  let glitchSeed = 0;
+
   // For each round
   for (const round of game.rounds) {
+    // Round title card
+    const aliveCount = game.players.length - eliminatedSet.size;
+    sequences.push(
+      <Sequence
+        key={`round-title-${round.round_number}`}
+        from={currentFrame}
+        durationInFrames={ROUND_TITLE_DURATION}
+      >
+        <RoundTitleScene
+          roundNumber={round.round_number}
+          aliveCount={aliveCount}
+          totalPlayers={game.players.length}
+        />
+      </Sequence>
+    );
+    currentFrame += ROUND_TITLE_DURATION;
+
     // Group statements by sub-round for proper confessional logic
     const subRounds = new Map<number, typeof round.statements>();
     for (const stmt of round.statements) {
@@ -85,6 +111,25 @@ export const Episode: React.FC<EpisodeProps> = ({ game, stats, episodeNumber }) 
         const statement = statements[si];
         const isMafia = statement.player === game.mafia_player;
 
+        // Typing speed varies by sub-round
+        let typingSpeed: TypingSpeed = "slow";
+        if (subRound === 2) typingSpeed = "fast";
+        if (subRound === 3) typingSpeed = si % 2 === 0 ? "fast" : "instant";
+
+        // Camera mode varies by sub-round
+        let cameraMode: CameraMode = "wide";
+        if (subRound === 2) cameraMode = "closeup";
+        if (subRound === 3) cameraMode = si % 2 === 0 ? "wide" : "closeup";
+
+        // Focal player: next alive player after speaker (deterministic)
+        const speakerIndex = game.players.findIndex((p) => p.name === statement.player);
+        const alivePlayers = game.players
+          .map((p, idx) => ({ ...p, idx }))
+          .filter((p) => p.alive && p.idx !== speakerIndex);
+        const focalPlayerIndex = alivePlayers.length > 0
+          ? alivePlayers[(speakerIndex) % alivePlayers.length].idx
+          : speakerIndex;
+
         // Public statement (table scene)
         sequences.push(
           <Sequence
@@ -96,13 +141,28 @@ export const Episode: React.FC<EpisodeProps> = ({ game, stats, episodeNumber }) 
               statement={statement}
               players={game.players}
               roundNumber={round.round_number}
+              typingSpeed={typingSpeed}
+              cameraMode={cameraMode}
+              focalPlayerIndex={focalPlayerIndex}
             />
           </Sequence>
         );
         currentFrame += STATEMENT_DURATION;
 
-        // Confessional (deterministic selection)
+        // Confessional with glitch transitions (deterministic selection)
         if (shouldShowConfessional(statement.player, game.mafia_player, si, round.round_number, subRound, statements.length)) {
+          // Glitch in
+          sequences.push(
+            <Sequence
+              key={`glitch-in-r${round.round_number}-sr${subRound}-${statement.player}`}
+              from={currentFrame}
+              durationInFrames={GLITCH_DURATION}
+            >
+              <GlitchTransition seed={++glitchSeed} />
+            </Sequence>
+          );
+          currentFrame += GLITCH_DURATION;
+
           sequences.push(
             <Sequence
               key={`confessional-r${round.round_number}-sr${subRound}-${statement.player}`}
@@ -113,6 +173,18 @@ export const Episode: React.FC<EpisodeProps> = ({ game, stats, episodeNumber }) 
             </Sequence>
           );
           currentFrame += CONFESSIONAL_DURATION;
+
+          // Glitch out
+          sequences.push(
+            <Sequence
+              key={`glitch-out-r${round.round_number}-sr${subRound}-${statement.player}`}
+              from={currentFrame}
+              durationInFrames={GLITCH_DURATION}
+            >
+              <GlitchTransition seed={++glitchSeed} />
+            </Sequence>
+          );
+          currentFrame += GLITCH_DURATION;
         }
       }
     }
@@ -152,6 +224,10 @@ export const Episode: React.FC<EpisodeProps> = ({ game, stats, episodeNumber }) 
       );
       currentFrame += ELIMINATION_DURATION;
     }
+
+    if (round.eliminated) {
+      eliminatedSet.add(round.eliminated);
+    }
   }
 
   // Stats
@@ -184,6 +260,8 @@ export function calculateDuration(game: GameResult): number {
   let frames = INTRO_DURATION;
 
   for (const round of game.rounds) {
+    frames += ROUND_TITLE_DURATION;
+
     // Group by sub-round to match Episode rendering
     const subRounds = new Map<number, typeof round.statements>();
     for (const stmt of round.statements) {
@@ -196,7 +274,7 @@ export function calculateDuration(game: GameResult): number {
       for (let si = 0; si < statements.length; si++) {
         frames += STATEMENT_DURATION;
         if (shouldShowConfessional(statements[si].player, game.mafia_player, si, round.round_number, subRound, statements.length)) {
-          frames += CONFESSIONAL_DURATION;
+          frames += GLITCH_DURATION + CONFESSIONAL_DURATION + GLITCH_DURATION;
         }
       }
     }

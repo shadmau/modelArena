@@ -78,4 +78,5 @@ export const CHARACTERS: Record<string, CharacterConfig> = {
   Gemini: { name: "Gemini", color: "#3B82F6", accentColor: "#93C5FD", emoji: "💎" },
   DeepSeek: { name: "DeepSeek", color: "#8B5CF6", accentColor: "#C4B5FD", emoji: "🔮" },
   Llama: { name: "Llama", color: "#EF4444", accentColor: "#FCA5A5", emoji: "🦙" },
+  Grok: { name: "Grok", color: "#F97316", accentColor: "#FDBA74", emoji: "🤖" },
 };

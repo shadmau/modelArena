@@ -1,5 +1,8 @@
 import React from "react";
 import { interpolate, useCurrentFrame, spring, useVideoConfig } from "remotion";
+import { MONO_FONT } from "../fonts";
+
+export type TypingSpeed = "slow" | "fast" | "instant";
 
 interface SpeechBubbleProps {
   text: string;
@@ -7,7 +10,14 @@ interface SpeechBubbleProps {
   y: number;
   color: string;
   maxWidth?: number;
+  typingSpeed?: TypingSpeed;
 }
+
+const TYPING_FRAMES: Record<TypingSpeed, number> = {
+  slow: 90,
+  fast: 30,
+  instant: 1,
+};
 
 export const SpeechBubble: React.FC<SpeechBubbleProps> = ({
   text,
@@ -15,15 +25,21 @@ export const SpeechBubble: React.FC<SpeechBubbleProps> = ({
   y,
   color,
   maxWidth = 400,
+  typingSpeed = "slow",
 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const scale = spring({ frame, fps, config: { damping: 12, stiffness: 100 } });
 
-  // Typewriter effect
-  const charsToShow = Math.floor(interpolate(frame, [0, 60], [0, text.length], {
-    extrapolateRight: "clamp",
-  }));
+  const duration = TYPING_FRAMES[typingSpeed];
+  const charsToShow =
+    typingSpeed === "instant"
+      ? text.length
+      : Math.floor(
+          interpolate(frame, [0, duration], [0, text.length], {
+            extrapolateRight: "clamp",
+          })
+        );
   const displayText = text.slice(0, charsToShow);
 
   return (
@@ -46,7 +62,7 @@ export const SpeechBubble: React.FC<SpeechBubbleProps> = ({
           color: "#fff",
           fontSize: 20,
           lineHeight: 1.5,
-          fontFamily: "monospace",
+          fontFamily: MONO_FONT,
           boxShadow: `0 0 20px ${color}33`,
         }}
       >

@@ -2,6 +2,7 @@ import React from "react";
 import { AbsoluteFill, interpolate, useCurrentFrame, spring, useVideoConfig } from "remotion";
 import { GameResult, CHARACTERS } from "../types/game";
 import { Avatar } from "../components/Avatar";
+import { DISPLAY_FONT, ensureFontsLoaded } from "../fonts";
 
 interface IntroSceneProps {
   game: GameResult;
@@ -9,6 +10,7 @@ interface IntroSceneProps {
 }
 
 export const IntroScene: React.FC<IntroSceneProps> = ({ game, episodeNumber }) => {
+  ensureFontsLoaded();
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
@@ -23,7 +25,7 @@ export const IntroScene: React.FC<IntroSceneProps> = ({ game, episodeNumber }) =
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        fontFamily: "monospace",
+        fontFamily: DISPLAY_FONT,
       }}
     >
       {/* Title */}

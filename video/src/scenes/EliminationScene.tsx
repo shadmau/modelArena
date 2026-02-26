@@ -2,6 +2,7 @@ import React from "react";
 import { AbsoluteFill, interpolate, useCurrentFrame, spring, useVideoConfig } from "remotion";
 import { CHARACTERS } from "../types/game";
 import { Avatar } from "../components/Avatar";
+import { DISPLAY_FONT, ensureFontsLoaded } from "../fonts";
 
 interface EliminationSceneProps {
   playerName: string;
@@ -24,6 +25,7 @@ export const EliminationScene: React.FC<EliminationSceneProps> = ({
     emoji: "🤖",
   };
 
+  ensureFontsLoaded();
   const isMafia = role === "mafia";
 
   // Dramatic reveal timing
@@ -41,7 +43,7 @@ export const EliminationScene: React.FC<EliminationSceneProps> = ({
     <AbsoluteFill
       style={{
         background: "linear-gradient(180deg, #0a0a0a 0%, #1a0a0a 100%)",
-        fontFamily: "monospace",
+        fontFamily: DISPLAY_FONT,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",

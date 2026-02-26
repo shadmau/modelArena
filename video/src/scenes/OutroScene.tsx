@@ -1,6 +1,7 @@
 import React from "react";
 import { AbsoluteFill, interpolate, useCurrentFrame, spring, useVideoConfig } from "remotion";
 import { CHARACTERS } from "../types/game";
+import { DISPLAY_FONT, ensureFontsLoaded } from "../fonts";
 
 interface OutroSceneProps {
   winner: "mafia" | "town";
@@ -9,6 +10,7 @@ interface OutroSceneProps {
 }
 
 export const OutroScene: React.FC<OutroSceneProps> = ({ winner, mafiaPlayer, episodeNumber }) => {
+  ensureFontsLoaded();
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
@@ -27,7 +29,7 @@ export const OutroScene: React.FC<OutroSceneProps> = ({ winner, mafiaPlayer, epi
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        fontFamily: "monospace",
+        fontFamily: DISPLAY_FONT,
       }}
     >
       {/* Winner banner */}

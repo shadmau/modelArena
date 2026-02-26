@@ -2,6 +2,7 @@ import React from "react";
 import { AbsoluteFill, interpolate, useCurrentFrame, spring, useVideoConfig } from "remotion";
 import { Statement, CHARACTERS } from "../types/game";
 import { Avatar } from "../components/Avatar";
+import { DISPLAY_FONT, MONO_FONT, ensureFontsLoaded } from "../fonts";
 
 interface ConfessionalSceneProps {
   statement: Statement;
@@ -9,6 +10,7 @@ interface ConfessionalSceneProps {
 }
 
 export const ConfessionalScene: React.FC<ConfessionalSceneProps> = ({ statement, isMafia }) => {
+  ensureFontsLoaded();
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const char = CHARACTERS[statement.player] || {
@@ -37,7 +39,7 @@ export const ConfessionalScene: React.FC<ConfessionalSceneProps> = ({ statement,
         background: isMafia
           ? "linear-gradient(135deg, #1a0505 0%, #2d0a0a 50%, #1a0a0a 100%)"
           : "linear-gradient(135deg, #05051a 0%, #0a0a2d 50%, #0a0a1a 100%)",
-        fontFamily: "monospace",
+        fontFamily: DISPLAY_FONT,
       }}
     >
       {/* Vignette overlay */}
@@ -85,6 +87,7 @@ export const ConfessionalScene: React.FC<ConfessionalSceneProps> = ({ statement,
             color: char.color,
             fontSize: 28,
             fontWeight: 700,
+            fontFamily: DISPLAY_FONT,
             marginBottom: 24,
           }}
         >
@@ -98,6 +101,7 @@ export const ConfessionalScene: React.FC<ConfessionalSceneProps> = ({ statement,
             fontSize: 24,
             lineHeight: 1.7,
             fontStyle: "italic",
+            fontFamily: MONO_FONT,
           }}
         >
           "{displayText}"
