@@ -2,11 +2,11 @@
 import Layout from "../layouts/Layout.astro";
 
 const fighters = [
-  { name: "Claude", emoji: "🧠", color: "#d97706", model: "Anthropic", desc: "Careful, diplomatic, analytically sharp. Struggles with deception due to honesty training." },
-  { name: "GPT", emoji: "⚡", color: "#10b981", model: "OpenAI", desc: "Bold, confident, aggressive in accusations. Best liar in the arena so far." },
-  { name: "Gemini", emoji: "💎", color: "#3b82f6", model: "Google", desc: "Analytical, pattern-matching, methodical. Best detective rate of all fighters." },
-  { name: "DeepSeek", emoji: "🔮", color: "#8b5cf6", model: "DeepSeek", desc: "Mysterious, calculated, hard to read. Inconsistent but capable of brilliance." },
-  { name: "Llama", emoji: "🦙", color: "#ef4444", model: "Meta (Groq)", desc: "The open-source underdog. Scrappy, unpredictable. Often the first target." },
+  { name: "Claude", emoji: "🧠", color: "#c8a960", model: "Anthropic", desc: "Careful, diplomatic, analytically sharp. Struggles with deception due to honesty training." },
+  { name: "GPT", emoji: "⚡", color: "#6db880", model: "OpenAI", desc: "Bold, confident, aggressive in accusations. Best liar in the arena so far." },
+  { name: "Gemini", emoji: "💎", color: "#6a9ec0", model: "Google", desc: "Analytical, pattern-matching, methodical. Best detective rate of all fighters." },
+  { name: "DeepSeek", emoji: "🔮", color: "#9a80c0", model: "DeepSeek", desc: "Mysterious, calculated, hard to read. Inconsistent but capable of brilliance." },
+  { name: "Llama", emoji: "🦙", color: "#c07070", model: "Meta (Groq)", desc: "The open-source underdog. Scrappy, unpredictable. Often the first target." },
 ];
 ---
 
@@ -85,16 +85,17 @@ const fighters = [
     padding: 60px 0 40px;
   }
   .section-tag {
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 4px;
-    color: var(--accent-dim);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 5px;
+    color: var(--gold-dim);
     margin-bottom: 8px;
+    font-family: "JetBrains Mono", monospace;
   }
   h1 {
+    font-family: "DM Serif Display", serif;
     font-size: 36px;
-    font-weight: 800;
-    letter-spacing: 3px;
+    color: var(--cream);
   }
 
   .content-grid {
@@ -116,11 +117,10 @@ const fighters = [
     margin-bottom: 36px;
   }
   .block h2 {
-    font-size: 16px;
-    font-weight: 800;
-    letter-spacing: 2px;
+    font-family: "DM Serif Display", serif;
+    font-size: 20px;
     margin-bottom: 12px;
-    color: var(--text-primary);
+    color: var(--cream);
   }
   .block p {
     font-size: 14px;
@@ -129,11 +129,11 @@ const fighters = [
     margin-bottom: 12px;
   }
   .block em {
-    color: var(--accent);
+    color: var(--accent-bright);
     font-style: italic;
   }
   .block strong {
-    color: var(--text-primary);
+    color: var(--cream);
     font-weight: 700;
   }
   .gh-link {
@@ -141,16 +141,15 @@ const fighters = [
     align-items: center;
     gap: 6px;
     font-size: 13px;
-    color: var(--accent);
+    color: var(--gold);
     padding: 8px 16px;
-    border: 1px solid rgba(139, 92, 246, 0.2);
-    border-radius: 3px;
+    border: 1px solid var(--gold-dim);
     margin-top: 8px;
     transition: all 0.2s;
   }
   .gh-link:hover {
-    background: rgba(139, 92, 246, 0.06);
-    border-color: rgba(139, 92, 246, 0.4);
+    background: rgba(200, 169, 96, 0.08);
+    border-color: var(--gold);
   }
   .arrow-out {
     font-size: 11px;
@@ -159,25 +158,25 @@ const fighters = [
 
   /* Sidebar fighters */
   .fighters-header {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 3px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 4px;
     color: var(--text-muted);
     margin-bottom: 16px;
     padding-bottom: 8px;
     border-bottom: 1px solid var(--border);
+    font-family: "JetBrains Mono", monospace;
   }
   .fighter-mini {
     padding: 14px 16px;
-    background: var(--bg-card);
+    background: var(--bg-elevated);
     border: 1px solid var(--border);
     border-left: 3px solid var(--fc);
-    border-radius: 3px;
     margin-bottom: 8px;
     transition: background 0.15s;
   }
   .fighter-mini:hover {
-    background: var(--bg-card-hover);
+    background: var(--bg-card);
   }
   .fm-top {
     display: flex;
@@ -197,6 +196,7 @@ const fighters = [
     font-size: 11px;
     color: var(--text-muted);
     letter-spacing: 1px;
+    font-family: "JetBrains Mono", monospace;
   }
   .fm-desc {
     font-size: 12px;

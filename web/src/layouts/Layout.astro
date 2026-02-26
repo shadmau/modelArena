@@ -5,9 +5,10 @@ interface Props {
   ogImage?: string;
 }
 
-const { title, description = "LLMs compete in social deduction games. Watch AI models lie, scheme, and reason.", ogImage } = Astro.props;
+const { title, description = "LLMs compete in social deduction games. Watch their private reasoning — every lie, every failure. Open source.", ogImage } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const ogImageURL = ogImage ? new URL(ogImage, Astro.site) : new URL("/og.png", Astro.site);
+const fullTitle = title.includes("ModelArena") ? title : `${title} | ModelArena`;
 ---
 
 <!doctype html>
@@ -15,21 +16,21 @@ const ogImageURL = ogImage ? new URL(ogImage, Astro.site) : new URL("/og.png", A
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{title} | ModelArena</title>
+    <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalURL} />
-    <meta property="og:title" content={`${title} | ModelArena`} />
+    <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImageURL} />
     <meta property="og:site_name" content="ModelArena" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={`${title} | ModelArena`} />
+    <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageURL} />
 
@@ -38,17 +39,19 @@ const ogImageURL = ogImage ? new URL(ogImage, Astro.site) : new URL("/og.png", A
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=General+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
   </head>
   <body>
     <nav>
       <div class="container nav-inner">
         <a href="/" class="logo">
-          <span class="logo-bracket">[</span>MODEL<span class="logo-dot">.</span>ARENA<span class="logo-bracket">]</span>
+          <img src="/logo.svg" alt="ModelArena" class="logo-icon" />
+          <span class="logo-text">Model<em class="logo-accent">Arena</em></span>
         </a>
         <div class="nav-links">
           <a href="/">Rankings</a>
           <a href="/episodes">Episodes</a>
+          <a href="/episodes/ep001#transcript">Transcript</a>
           <a href="/about">About</a>
           <a href="https://github.com/shadmau/modelArena" target="_blank" class="nav-gh">
             GitHub <span class="arrow-out">&nearr;</span>
@@ -61,13 +64,18 @@ const ogImageURL = ogImage ? new URL(ogImage, Astro.site) : new URL("/og.png", A
     </main>
     <footer>
       <div class="container footer-inner">
-        <div class="footer-brand">MODEL.ARENA</div>
+        <div class="footer-brand">ModelArena</div>
         <div class="footer-tagline">LLMs compete. You watch them think.</div>
         <div class="footer-links">
-          <a href="https://github.com/shadmau/modelArena">GitHub</a>
+          <a href="https://github.com/shadmau/modelArena" target="_blank">GitHub</a>
+          <span class="footer-sep">/</span>
+          <a href="https://youtube.com/@modelarena" target="_blank">YouTube</a>
+          <span class="footer-sep">/</span>
+          <a href="https://x.com/modelarena" target="_blank">X</a>
           <span class="footer-sep">/</span>
           <a href="/about">About</a>
         </div>
+        <div class="footer-license">MIT Licensed</div>
       </div>
     </footer>
   </body>
@@ -82,39 +90,43 @@ const ogImageURL = ogImage ? new URL(ogImage, Astro.site) : new URL("/og.png", A
     position: sticky;
     top: 0;
     z-index: 100;
-    background: rgba(6, 6, 17, 0.85);
+    background: rgba(17, 13, 13, 0.92);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
-    padding: 0;
   }
   .nav-inner {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 56px;
+    height: 64px;
   }
   .logo {
-    font-size: 15px;
-    font-weight: 800;
-    letter-spacing: 3px;
-    color: var(--text-primary);
-    transition: text-shadow 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: opacity 0.2s;
   }
   .logo:hover {
-    text-shadow: 0 0 24px var(--accent-glow);
-    color: var(--text-primary);
+    opacity: 0.85;
   }
-  .logo-bracket {
-    color: var(--accent);
-    font-weight: 300;
+  .logo-icon {
+    width: 28px;
+    height: 28px;
   }
-  .logo-dot {
-    color: var(--accent);
+  .logo-text {
+    font-family: "DM Serif Display", serif;
+    font-size: 20px;
+    color: var(--cream);
+    letter-spacing: 2px;
+  }
+  .logo-accent {
+    color: var(--gold);
+    font-style: italic;
   }
   .nav-links {
     display: flex;
-    gap: 28px;
+    gap: 32px;
     font-size: 13px;
     font-weight: 500;
     letter-spacing: 0.5px;
@@ -126,7 +138,7 @@ const ogImageURL = ogImage ? new URL(ogImage, Astro.site) : new URL("/og.png", A
     position: relative;
   }
   .nav-links a:hover {
-    color: var(--text-primary);
+    color: var(--cream);
   }
   .nav-links a::after {
     content: "";
@@ -135,7 +147,7 @@ const ogImageURL = ogImage ? new URL(ogImage, Astro.site) : new URL("/og.png", A
     left: 0;
     right: 0;
     height: 1px;
-    background: var(--accent);
+    background: var(--gold-dim);
     transform: scaleX(0);
     transition: transform 0.2s;
   }
@@ -151,17 +163,17 @@ const ogImageURL = ogImage ? new URL(ogImage, Astro.site) : new URL("/og.png", A
   }
   footer {
     border-top: 1px solid var(--border);
-    padding: 48px 0;
+    padding: 56px 0;
     margin-top: 80px;
   }
   .footer-inner {
     text-align: center;
   }
   .footer-brand {
-    font-size: 12px;
-    font-weight: 800;
-    letter-spacing: 4px;
+    font-family: "DM Serif Display", serif;
+    font-size: 14px;
     color: var(--text-muted);
+    letter-spacing: 3px;
     margin-bottom: 8px;
   }
   .footer-tagline {
@@ -176,10 +188,32 @@ const ogImageURL = ogImage ? new URL(ogImage, Astro.site) : new URL("/og.png", A
     color: var(--text-muted);
   }
   .footer-links a:hover {
-    color: var(--text-secondary);
+    color: var(--cream);
   }
   .footer-sep {
     color: var(--border-strong);
     margin: 0 8px;
+  }
+  .footer-license {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 16px;
+    letter-spacing: 1px;
+  }
+
+  @media (max-width: 768px) {
+    .nav-links {
+      gap: 16px;
+      font-size: 12px;
+    }
+  }
+  @media (max-width: 640px) {
+    .nav-inner {
+      height: 56px;
+    }
+    .nav-links {
+      gap: 12px;
+      font-size: 11px;
+    }
   }
 </style>

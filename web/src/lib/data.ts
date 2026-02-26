@@ -33,11 +33,11 @@ interface PlayerStandings {
 
 // Character display config
 const CHARACTER_META: Record<string, { emoji: string; color: string; title: string }> = {
-  Claude: { emoji: "🧠", color: "#d97706", title: "THE DIPLOMAT" },
-  GPT: { emoji: "⚡", color: "#10b981", title: "THE DECEIVER" },
-  Gemini: { emoji: "💎", color: "#3b82f6", title: "THE DETECTIVE" },
-  DeepSeek: { emoji: "🔮", color: "#8b5cf6", title: "THE WILDCARD" },
-  Llama: { emoji: "🦙", color: "#ef4444", title: "THE SCAPEGOAT" },
+  Claude: { emoji: "🧠", color: "#c8a960", title: "THE DIPLOMAT" },
+  GPT: { emoji: "⚡", color: "#6db880", title: "THE DECEIVER" },
+  Gemini: { emoji: "💎", color: "#6a9ec0", title: "THE DETECTIVE" },
+  DeepSeek: { emoji: "🔮", color: "#9a80c0", title: "THE WILDCARD" },
+  Llama: { emoji: "🦙", color: "#c07070", title: "THE SCAPEGOAT" },
 };
 
 /**
@@ -128,10 +128,10 @@ export function getPlayerStandings(): PlayerStandings[] {
       emoji: meta.emoji,
       color: meta.color,
       title: meta.title,
-      winRate: ps.win_rate || 0,
-      mafiaWR: ps.mafia_win_rate || 0,
-      townWR: ps.town_win_rate || 0,
-      detection: ps.detection_rate || 0,
+      winRate: Math.round(ps.win_rate || 0),
+      mafiaWR: Math.round(ps.mafia_win_rate || 0),
+      townWR: Math.round(ps.town_win_rate || 0),
+      detection: Math.round(ps.detection_rate || 0),
       record: `${wins}-${losses}`,
       gamesPlayed: ps.games_played || 0,
     };

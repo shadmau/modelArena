@@ -1,25 +1,40 @@
+/* MERLOT / OLD MONEY THEME
+   Deep burgundy/brown + cream + gold accents
+   DM Serif Display (headlines) + General Sans (body) + JetBrains Mono (data)
+*/
 :root {
-  --bg-primary: #060611;
-  --bg-secondary: #0c0c1f;
-  --bg-card: #111128;
-  --bg-card-hover: #16163a;
-  --text-primary: #eeeef6;
-  --text-secondary: #8888a8;
-  --text-muted: #4a4a6a;
-  --accent: #8b5cf6;
-  --accent-dim: #6d43d8;
-  --accent-glow: rgba(139, 92, 246, 0.25);
-  --red: #ef4444;
-  --green: #10b981;
-  --blue: #3b82f6;
-  --border: rgba(255, 255, 255, 0.06);
-  --border-strong: rgba(255, 255, 255, 0.12);
+  --bg-base: #110d0d;
+  --bg-elevated: #1a1414;
+  --bg-card: #211919;
+  --bg-card-hover: #2a2020;
+  --bg-primary: #110d0d;
+  --bg-secondary: #1a1414;
 
-  --claude: #d97706;
-  --gpt: #10b981;
-  --gemini: #3b82f6;
-  --deepseek: #8b5cf6;
-  --llama: #ef4444;
+  --text-primary: #e8e2dc;
+  --text-secondary: #9a8e85;
+  --text-muted: #5a504a;
+
+  --accent: #8b2232;
+  --accent-bright: #c43048;
+  --accent-dim: #6b1a28;
+  --accent-glow: rgba(139, 34, 50, 0.2);
+
+  --gold: #c8a960;
+  --gold-dim: #8a7840;
+  --cream: #e8dcc8;
+
+  --green: #6db880;
+  --red: #c43048;
+  --blue: #6a9ec0;
+
+  --border: rgba(200, 180, 160, 0.08);
+  --border-strong: rgba(200, 180, 160, 0.15);
+
+  --claude: #c8a960;
+  --gpt: #6db880;
+  --gemini: #6a9ec0;
+  --deepseek: #9a80c0;
+  --llama: #c07070;
 }
 
 * {
@@ -33,37 +48,36 @@ html {
 }
 
 body {
-  font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
-  background: var(--bg-primary);
+  font-family: "General Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-base);
   color: var(--text-primary);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  border-top: 1px solid var(--gold-dim);
 }
 
-/* Subtle noise grain overlay */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 9999;
+.serif {
+  font-family: "DM Serif Display", serif;
+}
+
+.mono {
+  font-family: "JetBrains Mono", monospace;
 }
 
 a {
-  color: var(--accent);
+  color: var(--gold);
   text-decoration: none;
   transition: color 0.15s;
 }
 a:hover {
-  color: #a78bfa;
+  color: var(--cream);
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 32px;
 }
 
 /* Staggered entrance animations */
@@ -86,9 +100,4 @@ a:hover {
 @keyframes pulseGlow {
   0%, 100% { opacity: 0.4; }
   50% { opacity: 0.8; }
-}
-
-@keyframes scanline {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(100vh); }
 }

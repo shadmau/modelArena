@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Dark background -->
+  <rect width="512" height="512" rx="16" fill="#110d0d"/>
+  <!-- Pentagon connecting lines — centered at (256, 260), radius 140 -->
+  <polygon points="256,120 389.3,249.6 338.5,410.4 173.5,410.4 122.7,249.6" fill="none" stroke="#5a504a" stroke-width="1.5"/>
+  <!-- Top center -->
+  <circle cx="256" cy="120" r="22" fill="#e8dcc8"/>
+  <!-- Top right — burgundy accent -->
+  <circle cx="389.3" cy="249.6" r="22" fill="#c43048"/>
+  <!-- Bottom right -->
+  <circle cx="338.5" cy="410.4" r="22" fill="#e8dcc8"/>
+  <!-- Bottom left -->
+  <circle cx="173.5" cy="410.4" r="22" fill="#e8dcc8"/>
+  <!-- Top left -->
+  <circle cx="122.7" cy="249.6" r="22" fill="#e8dcc8"/>
+</svg>

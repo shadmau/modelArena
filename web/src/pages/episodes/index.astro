@@ -60,16 +60,17 @@ const enriched = episodes.map(ep => {
     padding: 60px 0 48px;
   }
   .section-tag {
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 4px;
-    color: var(--accent-dim);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 5px;
+    color: var(--gold-dim);
     margin-bottom: 8px;
+    font-family: "JetBrains Mono", monospace;
   }
   h1 {
+    font-family: "DM Serif Display", serif;
     font-size: 36px;
-    font-weight: 800;
-    letter-spacing: 3px;
+    color: var(--cream);
     margin-bottom: 8px;
   }
   .page-subtitle {
@@ -95,10 +96,10 @@ const enriched = episodes.map(ep => {
   }
   .empty-code {
     font-size: 13px;
-    color: var(--accent);
+    font-family: "JetBrains Mono", monospace;
+    color: var(--gold);
     background: var(--bg-card);
     padding: 8px 16px;
-    border-radius: 3px;
     border: 1px solid var(--border);
   }
 
@@ -113,37 +114,40 @@ const enriched = episodes.map(ep => {
     gap: 24px;
     align-items: center;
     padding: 28px 24px;
-    background: var(--bg-card);
+    background: var(--bg-elevated);
     border: 1px solid var(--border);
-    border-radius: 4px;
     color: var(--text-primary);
     transition: all 0.2s;
     animation: fadeSlideUp 0.5s ease both;
     animation-delay: var(--delay);
   }
   .episode-card:hover {
-    background: var(--bg-card-hover);
+    background: var(--bg-card);
     border-color: var(--border-strong);
     transform: translateX(4px);
+    color: var(--text-primary);
   }
 
   .ep-number {
     font-size: 13px;
-    font-weight: 800;
-    color: var(--accent);
+    font-weight: 700;
+    color: var(--gold);
     letter-spacing: 2px;
+    font-family: "JetBrains Mono", monospace;
   }
   .ep-game-tag {
     font-size: 10px;
-    font-weight: 700;
+    font-weight: 600;
     letter-spacing: 3px;
     color: var(--text-muted);
     margin-bottom: 6px;
+    font-family: "JetBrains Mono", monospace;
   }
   .ep-title {
+    font-family: "DM Serif Display", serif;
     font-size: 20px;
-    font-weight: 700;
     margin-bottom: 12px;
+    color: var(--cream);
   }
   .ep-chips {
     display: flex;
@@ -155,10 +159,10 @@ const enriched = episodes.map(ep => {
     font-weight: 500;
     letter-spacing: 1px;
     padding: 3px 8px;
-    background: rgba(255, 255, 255, 0.04);
+    background: rgba(200, 169, 96, 0.04);
     border: 1px solid var(--border);
-    border-radius: 2px;
     color: var(--text-muted);
+    font-family: "JetBrains Mono", monospace;
   }
 
   .ep-right {
@@ -170,6 +174,7 @@ const enriched = episodes.map(ep => {
   .ep-date {
     font-size: 12px;
     color: var(--text-muted);
+    font-family: "JetBrains Mono", monospace;
   }
   .ep-arrow {
     font-size: 20px;
@@ -177,7 +182,7 @@ const enriched = episodes.map(ep => {
     transition: all 0.2s;
   }
   .episode-card:hover .ep-arrow {
-    color: var(--accent);
+    color: var(--gold);
     transform: translateX(4px);
   }
 
