@@ -12,12 +12,12 @@ from engine.models import PlayerInfo
 logger = logging.getLogger(__name__)
 
 DEFAULT_MODELS = {
-    "Claude": "anthropic/claude-sonnet-4-20250514",
-    "GPT": "openai/gpt-4o",
-    "Gemini": "gemini/gemini-2.5-pro",
+    "Claude": "anthropic/claude-sonnet-4-6",
+    "GPT": "openai/gpt-5.2",
+    "Gemini": "gemini/gemini-3.1-pro-preview",
     "DeepSeek": "deepseek/deepseek-chat",
-    "Llama": "groq/llama-3.3-70b-versatile",
-    "Grok": "xai/grok-3",
+    "Llama": "openrouter/meta-llama/llama-4-maverick",
+    "Grok": "xai/grok-4-1-fast-reasoning",
 }
 
 PLAYER_COLORS = {

@@ -7,6 +7,9 @@ import logging
 from pathlib import Path
 
 import click
+from dotenv import load_dotenv
+
+load_dotenv()
 
 from engine.games.mafia import run_episode
 from engine.models import EpisodeResult

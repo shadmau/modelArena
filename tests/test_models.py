@@ -15,13 +15,13 @@ from engine.models import (
 
 class TestPlayerInfo:
     def test_defaults(self):
-        p = PlayerInfo(name="Claude", model="anthropic/claude-sonnet-4-20250514")
+        p = PlayerInfo(name="Claude", model="anthropic/claude-sonnet-4-6")
         assert p.alive is True
         assert p.role is None
         assert p.avatar_color == ""
 
     def test_role_assignment(self):
-        p = PlayerInfo(name="GPT", model="openai/gpt-4o", role=Role.MAFIA)
+        p = PlayerInfo(name="GPT", model="openai/gpt-5.2", role=Role.MAFIA)
         assert p.role == Role.MAFIA
 
     def test_model_copy_is_independent(self):

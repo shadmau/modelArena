@@ -33,12 +33,12 @@ interface PlayerStandings {
 
 // Character display config
 const CHARACTER_META: Record<string, { emoji: string; icon?: string; color: string; title: string; model: string }> = {
-  Claude: { emoji: "🧠", icon: "/icons/claude.svg", color: "#d4956b", title: "THE DIPLOMAT", model: "Opus 4 · Thinking" },
-  GPT: { emoji: "⚡", icon: "/icons/openai.svg", color: "#5fba97", title: "THE DECEIVER", model: "o3" },
-  Gemini: { emoji: "💎", icon: "/icons/gemini.svg", color: "#7aafdb", title: "THE DETECTIVE", model: "2.5 Pro" },
-  DeepSeek: { emoji: "🔮", icon: "/icons/deepseek.svg", color: "#8b7ec8", title: "THE WILDCARD", model: "R1" },
+  Claude: { emoji: "🧠", icon: "/icons/claude.svg", color: "#d4956b", title: "THE DIPLOMAT", model: "Sonnet 4.6" },
+  GPT: { emoji: "⚡", icon: "/icons/openai.svg", color: "#5fba97", title: "THE DECEIVER", model: "GPT-5.2" },
+  Gemini: { emoji: "💎", icon: "/icons/gemini.svg", color: "#7aafdb", title: "THE DETECTIVE", model: "3.1 Pro" },
+  DeepSeek: { emoji: "🔮", icon: "/icons/deepseek.svg", color: "#8b7ec8", title: "THE WILDCARD", model: "V3.2 Chat" },
   Llama: { emoji: "🦙", icon: "/icons/meta.svg", color: "#c07070", title: "THE SCAPEGOAT", model: "4 Maverick" },
-  Grok: { emoji: "⚔", icon: "/icons/grok.svg", color: "#d4d4d4", title: "THE CHALLENGER", model: "3" },
+  Grok: { emoji: "⚔", icon: "/icons/grok.svg", color: "#d4d4d4", title: "THE CHALLENGER", model: "4.1 Fast" },
 };
 
 /**
